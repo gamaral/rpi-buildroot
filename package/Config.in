@@ -746,4 +746,8 @@ source "package/vim/Config.in"
 endif
 endmenu
 
+menu "Raspberry Pi"
+source "package/rpi-userland/Config.in"
+endmenu
+
 endmenu
