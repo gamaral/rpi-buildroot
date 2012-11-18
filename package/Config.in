@@ -750,4 +750,8 @@ menu "Raspberry Pi"
 source "package/rpi-userland/Config.in"
 endmenu
 
+menu "Marshmallow Entertainment System"
+source "package/marshmallow_h/Config.in"
+endmenu
+
 endmenu

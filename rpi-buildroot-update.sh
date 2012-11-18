@@ -1,5 +1,5 @@
 #!/bin/sh
 
 git fetch origin
-git checkout origin/rpi
-git checkout -B rpi
+git checkout origin/marshmallow
+git checkout -B marshmallow

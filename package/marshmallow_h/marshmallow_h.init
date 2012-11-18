@@ -1,0 +1,19 @@
+#! /bin/sh
+#
+
+case "$1" in
+	start|"")
+		if [ "$VERBOSE" != no ]
+		then
+			echo -n "Initializing marshmallow game engine... "
+		fi
+
+		/usr/games/marshmallow_h/run platformer_demo0 &
+
+		[ "$VERBOSE" != no ] && echo "done."
+		;;
+	*)
+		echo "Usage: marshmallow_h {start}" >&2
+		exit 1
+		;;
+esac

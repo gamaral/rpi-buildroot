@@ -43,4 +43,9 @@ core_freq=500
 sdram_freq=500
 over_voltage=6
 
+# marshmallow
+gpu_mem=128
+gpu_mem_512=256
+initial_turbo=8
+
 # for more options see http://elinux.org/RPi_config.txt
