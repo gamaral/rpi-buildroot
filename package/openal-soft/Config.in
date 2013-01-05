@@ -1,0 +1,29 @@
+config BR2_PACKAGE_OPENAL_SOFT
+        bool "openal-soft"
+        help
+          OpenAL Soft is an LGPL-licensed, cross-platform, software
+          implementation of the OpenAL 3D audio API.
+
+          http://kcat.strangesoft.net/openal.html
+
+if BR2_PACKAGE_OPENAL_SOFT
+
+menu "OpenAL selection"
+
+config BR2_PACKAGE_OPENAL_SOFT_ALSA
+	bool "alsa"
+	default y
+	depends on BR2_PACKAGE_ALSA_LIB
+
+config BR2_PACKAGE_OPENAL_SOFT_OSS
+	bool "oss"
+	default n
+
+config BR2_PACKAGE_OPENAL_SOFT_UTILS
+	bool "utils"
+	default n
+
+endmenu
+
+endif
+

@@ -1,0 +1,22 @@
+config BR2_PACKAGE_MARSHMALLOW_H
+	bool "marshmallow_h"
+	help
+	  Marshmallow Game Engine
+
+	  https://github.com/gamaral/marshmallow_h
+
+if BR2_PACKAGE_MARSHMALLOW_H
+
+menu "Marshmallow selection"
+
+config BR2_PACKAGE_MARSHMALLOW_H_DEMOS
+	bool "marshmallow_h_demos"
+	default y
+	depends on BR2_PACKAGE_MARSHMALLOW_H
+	help
+	  Build and install Marshmallow Game Engine demos
+
+endmenu
+
+endif
+
