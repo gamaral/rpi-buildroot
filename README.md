@@ -106,7 +106,7 @@ You will need to copy all the files in *output/target/boot* to your *boot*
 partition.
 
 	# run the following as root
-	cp output/target/boot/* /media/boot
+	cp output/images/boot/* /media/boot
 	umount /media/boot
 
 The second (rootfs) can be as big as you want, but with a 200 MB minimum,
@@ -120,6 +120,6 @@ and formated as *ext4*.
 You will need to extract *output/images/rootfs.tar* onto the partition, as **root**.
 
 	# run the following as root
-	tar -xvpsf output/images/rootfs.tar -C /media/rootfs # replace with your mount directory
+	unsquashfs -f -d /media/rootfs output/images/rootfs.squashfs # replace /media/rootfs with your mount directory
 	umount /media/rootfs
 
