@@ -8,32 +8,32 @@
 SDCARD="${1}"
 
 usage() {
-	echo "Usage: ${0} [SDCARD]"
-	echo "Where SDCARD is your SD card device node, for example: /dev/sdx"
-	echo
-	echo "You will require *root* privileges in order to use this script."
-	echo
+        echo "Usage: ${0} [SDCARD]"
+        echo "Where SDCARD is your SD card device node, for example: /dev/sdx"
+        echo
+        echo "You will require *root* privileges in order to use this script."
+        echo
 }
 
 confirm() {
-	echo "You are about to totally decimate the following device node: ${SDCARD}"
-	echo
-	echo "If you are sure you want to continue? (Please write \"YES\" in all caps)"
+        echo "You are about to totally decimate the following device node: ${SDCARD}"
+        echo
+        echo "If you are sure you want to continue? (Please write \"YES\" in all caps)"
 
-	read CONTUNUE
+        read CONTUNUE
 
-	if [ "${CONTUNUE}" != "YES" ]; then
-		echo "User didn't write \"YES\"... ABORTING!"
-		exit 1
-	fi
+        if [ "${CONTUNUE}" != "YES" ]; then
+                echo "User didn't write \"YES\"... ABORTING!"
+                exit 1
+        fi
 }
 
 section() {
-	sync
-	echo "*****************************************************************************************"
-	echo "> ${*}"
-	echo "*****************************************************************************************"
-	sleep 1
+        sync
+        echo "*****************************************************************************************"
+        echo "> ${*}"
+        echo "*****************************************************************************************"
+        sleep 1
 }
 
 # environment overrides
@@ -43,23 +43,23 @@ OUTPUT_PREFIX=""
 
 # check parameters
 
-if [ -z "${SDCARD}" ] || [ "${SDCARD}" == "-h" ] || [ "${SDCARD}" == "--help" ]; then
-	usage
-	exit 0
+if [ -z "${SDCARD}" ] || [ "${SDCARD}" = "-h" ] || [ "${SDCARD}" = "--help" ]; then
+        usage
+        exit 0
 fi
 
 # check if node is a block device
 
 if [ ! -b "${SDCARD}" ]; then
-	echo "${SDCARD} is not a block device!"
-	exit 1
+        echo "${SDCARD} is not a block device!"
+        exit 1
 fi
 
 # root privilege check
 
-if [ ${EUID} -ne 0 ]; then
-	echo "${0} requires root privileges in order to work."
-	exit 0
+if [ $(id -u) -ne 0 ]; then
+        echo "${0} requires root privileges in order to work."
+        exit 0
 fi
 
 # dependencies
@@ -70,23 +70,23 @@ MKFS_VFAT=`which mkfs.vfat`
 TAR=`which tar`
 
 if [ -z "${FDISK}" ] || [ -z "${MKFS_EXT4}" ] || [ -z "${MKFS_VFAT}" ] || [ -z "${TAR}" ]; then
-	echo "Missing dependencies:\n"
-	echo "FDISK=${FDISK}"
-	echo "MKFS_EXT4=${MKFS_EXT4}"
-	echo "MKFS_VFAT=${MKFS_VFAT}"
-	echo "TAR=${TAR}"
-	exit 1
+        echo "Missing dependencies:\n"
+        echo "FDISK=${FDISK}"
+        echo "MKFS_EXT4=${MKFS_EXT4}"
+        echo "MKFS_VFAT=${MKFS_VFAT}"
+        echo "TAR=${TAR}"
+        exit 1
 fi
 
 # sanity check
 
-if [ ! -d "images/boot" ] || [ ! -f "images/rootfs.tar" ]; then
-	if [ -d "output/images/boot" ] && [ -f "output/images/rootfs.tar" ]; then
-		OUTPUT_PREFIX="output/"
-	else
-		echo "Didn't find boot and/or rootfs.tar! ABORT."
-		exit 1
-	fi
+if [ ! -f "images/zImage" ] || [ ! -f "images/rootfs.tar" ] || [ ! -d "images/rpi-firmware" ]; then
+        if [ -f "output/images/zImage" ] && [ -f "output/images/rootfs.tar" ] && [ -d "output/images/rpi-firmware" ]; then
+                OUTPUT_PREFIX="output/"
+        else
+                echo "Didn't find boot and/or rootfs.tar! ABORT."
+                exit 1
+        fi
 fi
 
 # warn user
@@ -135,7 +135,8 @@ mkdir .mnt
 section "Populating boot partition..."
 
 mount "${SDCARD}1" .mnt || exit 2
-cp ${OUTPUT_PREFIX}images/boot/* .mnt
+cp ${OUTPUT_PREFIX}images/rpi-firmware/* ${OUTPUT_PREFIX}images/zImage .mnt
+sync
 umount .mnt
 
 # fill rootfs
@@ -144,6 +145,7 @@ section "Populating rootfs partition..."
 
 mount "${SDCARD}2" .mnt || exit 2
 ${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
+sync
 umount .mnt
 
 # clean up
