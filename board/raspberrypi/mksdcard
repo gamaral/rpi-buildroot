@@ -57,7 +57,7 @@ fi
 
 # root privilege check
 
-if [ $(id -u) -ne 0 ]; then
+if [ ${EUID} -ne 0 ]; then
         echo "${0} requires root privileges in order to work."
         exit 0
 fi
@@ -80,8 +80,8 @@ fi
 
 # sanity check
 
-if [ ! -f "images/zImage" ] || [ ! -f "images/rootfs.tar" ] || [ ! -d "images/rpi-firmware" ]; then
-        if [ -f "output/images/zImage" ] && [ -f "output/images/rootfs.tar" ] && [ -d "output/images/rpi-firmware" ]; then
+if [ ! -d "images/boot" ] || [ ! -f "images/rootfs.tar" ] || [ ! -d "images/rpi-firmware" ]; then
+        if [ -d "output/images/boot" ] && [ -f "output/images/rootfs.tar" ] && [ -d "output/images/rpi-firmware" ]; then
                 OUTPUT_PREFIX="output/"
         else
                 echo "Didn't find boot and/or rootfs.tar! ABORT."
