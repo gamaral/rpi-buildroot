@@ -1,0 +1,49 @@
+#!/bin/sh
+
+[ -f /etc/ntp.conf ] || exit 0
+
+mkdir -p /var/lib/ntp
+
+start() {
+    server=$(cat /etc/ntp.conf | grep server | head -n 1 | cut -d ' ' -f 2)
+    if [ -n "$server" ]; then
+        echo -n "Starting ntpdate: "
+        ntpdate $server > /dev/null
+        [ $? == 0 ] && echo "done" || echo "failed"
+    fi
+
+    echo -n "Starting ntpd: "
+    ntpd -g -c /etc/ntp.conf
+    [ $? == 0 ] && echo "done" || echo "failed"
+}
+
+stop() {
+    echo -n "Shutting down ntpd: "
+    kill `pidof ntpd` 2>/dev/null
+    [ $? == 0 ] && echo "done" || echo "failed"
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+
+    stop)
+        stop
+        ;;
+
+    restart)
+        restart
+        ;;
+
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?
