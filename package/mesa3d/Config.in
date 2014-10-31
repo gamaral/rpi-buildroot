@@ -54,6 +54,14 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SVGA
 	help
 	  This is a virtual GPU driver for VMWare virtual machines.
 
+config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VC4
+        bool "Gallium Raspberry Pi VC4 driver"
+        depends on BR2_arm
+        select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
+        select BR2_PACKAGE_LIBDRM
+        help
+          This is VC4 GPU driver for Raspberry Pi.
+
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST
 	bool "Gallium swrast driver"
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
