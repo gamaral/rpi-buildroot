@@ -16,11 +16,11 @@ Signed-off-by: Eric Le Bihan <eric.le.bihan.dev@free.fr>
  src/mapi/Makefile.am     | 3 +++
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/src/egl/main/Makefile.am b/src/egl/main/Makefile.am
-index 60cb600..1cd5cd2 100644
---- a/src/egl/main/Makefile.am
-+++ b/src/egl/main/Makefile.am
-@@ -126,9 +126,6 @@ pkgconfigdir = $(libdir)/pkgconfig
+Index: mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4/src/egl/main/Makefile.am
+===================================================================
+--- mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4.orig/src/egl/main/Makefile.am	2014-11-03 11:06:48.487450144 +0100
++++ mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4/src/egl/main/Makefile.am	2014-11-03 11:06:48.479450104 +0100
+@@ -85,9 +85,6 @@
  
  pkgconfig_DATA = egl.pc
  
@@ -30,17 +30,15 @@ index 60cb600..1cd5cd2 100644
  egldir = $(includedir)/EGL
  egl_HEADERS = \
  	$(top_srcdir)/include/EGL/eglext.h \
-diff --git a/src/mapi/Makefile.am b/src/mapi/Makefile.am
-index ef53803..2a8c555 100644
---- a/src/mapi/Makefile.am
-+++ b/src/mapi/Makefile.am
-@@ -40,3 +40,6 @@ endif
- if HAVE_OPENVG
+Index: mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4/src/mapi/Makefile.am
+===================================================================
+--- mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4.orig/src/mapi/Makefile.am	2014-11-03 11:06:48.487450144 +0100
++++ mesa3d-f87c7008958cdb095efa1cfb29ca8f3c9b9066e4/src/mapi/Makefile.am	2014-11-03 11:07:30.787659900 +0100
+@@ -211,4 +211,7 @@
  SUBDIRS += vgapi
  endif
-+
+ 
 +khrdir = $(includedir)/KHR
 +khr_HEADERS = $(top_srcdir)/include/KHR/khrplatform.h
--- 
-1.9.1
-
++
+ include $(top_srcdir)/install-lib-links.mk
