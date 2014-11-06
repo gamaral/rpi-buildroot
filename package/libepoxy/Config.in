@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBEPOXY
+	bool "libepoxy"
+	help
+	  Epoxy is a library for handling OpenGL function pointer management for you
+	
+	  https://github.com/anholt/libepoxy

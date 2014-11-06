@@ -68,8 +68,10 @@ XSERVER_XORG_SERVER_CONF_OPT = --disable-config-hal \
 		--$(if $(BR2_PACKAGE_XSERVER_XORG_SERVER_XVFB),en,dis)able-xvfb
 
 ifeq ($(BR2_PACKAGE_XSERVER_XORG_SERVER_MODULAR),y)
-XSERVER_XORG_SERVER_CONF_OPT += --enable-xorg
-XSERVER_XORG_SERVER_DEPENDENCIES += xlib_libpciaccess libdrm
+XSERVER_XORG_SERVER_CONF_OPT += --enable-glamor --enable-xorg
+XSERVER_XORG_SERVER_DEPENDENCIES += xlib_libpciaccess
+XSERVER_XORG_SERVER_DEPENDENCIES += libdrm
+XSERVER_XORG_SERVER_DEPENDENCIES += libepoxy
 else
 XSERVER_XORG_SERVER_CONF_OPT += --disable-xorg
 endif
