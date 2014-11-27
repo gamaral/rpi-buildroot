@@ -10,7 +10,7 @@
 
 # Find the latest Mesa git tag for use on VC4 at
 # http://cgit.freedesktop.org/mesa/mesa/log/?qt=grep&q=vc4
-MESA3D_VERSION = f87c7008958cdb095efa1cfb29ca8f3c9b9066e4
+MESA3D_VERSION = 52a7cb2ec465497bf6a4e20558340b45fbe7d7c3
 MESA3D_SITE = git://anongit.freedesktop.org/mesa/mesa
 
 MESA3D_LICENSE = MIT, SGI, Khronos
@@ -76,6 +76,8 @@ MESA3D_CONF_OPT += \
 else
 MESA3D_CONF_OPT += \
 	--enable-shared-glapi \
+	--enable-gallium-egl \
+	--enable-gallium-gbm \
 	--with-gallium-drivers=$(subst $(space),$(comma),$(MESA3D_GALLIUM_DRIVERS-y))
 endif
 
