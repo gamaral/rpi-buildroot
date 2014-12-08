@@ -1,0 +1,8 @@
+config BR2_PACKAGE_XDOTOOL
+	bool "xdotool"
+	select BR2_PACKAGE_XLIB_LIBXTST
+	depends on BR2_PACKAGE_XORG7
+	help
+	  fake keyboard/mouse input, window management, and more
+
+	  http://www.semicomplete.com/projects/xdotool/ 
