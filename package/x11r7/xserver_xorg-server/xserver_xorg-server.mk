@@ -4,7 +4,13 @@
 #
 ################################################################################
 
-XSERVER_XORG_SERVER_VERSION = 1.16.0
+# first RC for X server 1.17
+# * The modesetting driver has been merged into the server code base,
+# simplifying ongoing maintenance by coupling it to the X server
+# ABI/API release schedule. This now includes DRI2 support (so that GLX
+# works correctly) along with Glamor support (which handles DRI3)
+# http://lists.x.org/archives/xorg-announce/2014-October/002491.html
+XSERVER_XORG_SERVER_VERSION = 1.16.99.901
 XSERVER_XORG_SERVER_SOURCE = xorg-server-$(XSERVER_XORG_SERVER_VERSION).tar.bz2
 XSERVER_XORG_SERVER_SITE = http://xorg.freedesktop.org/releases/individual/xserver
 XSERVER_XORG_SERVER_LICENSE = MIT
@@ -62,8 +68,10 @@ XSERVER_XORG_SERVER_CONF_OPT = --disable-config-hal \
 		--$(if $(BR2_PACKAGE_XSERVER_XORG_SERVER_XVFB),en,dis)able-xvfb
 
 ifeq ($(BR2_PACKAGE_XSERVER_XORG_SERVER_MODULAR),y)
-XSERVER_XORG_SERVER_CONF_OPT += --enable-xorg
-XSERVER_XORG_SERVER_DEPENDENCIES += xlib_libpciaccess libdrm
+XSERVER_XORG_SERVER_CONF_OPT += --enable-glamor --enable-xorg
+XSERVER_XORG_SERVER_DEPENDENCIES += xlib_libpciaccess
+XSERVER_XORG_SERVER_DEPENDENCIES += libdrm
+XSERVER_XORG_SERVER_DEPENDENCIES += libepoxy
 else
 XSERVER_XORG_SERVER_CONF_OPT += --disable-xorg
 endif

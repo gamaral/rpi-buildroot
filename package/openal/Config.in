@@ -1,0 +1,6 @@
+menuconfig BR2_PACKAGE_OPENAL
+	bool "openal"
+	help
+	  OpenAL Soft
+
+	  http://kcat.strangesoft.net/openal.html

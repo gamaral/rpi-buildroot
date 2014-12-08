@@ -1,0 +1,9 @@
+config BR2_PACKAGE_XDRIVER_XF86_VIDEO_UDLFB
+	bool "xf86-video-udlfb"
+	select BR2_PACKAGE_XPROTO_FONTSPROTO
+	select BR2_PACKAGE_XPROTO_RANDRPROTO
+	select BR2_PACKAGE_XPROTO_RENDERPROTO
+	select BR2_PACKAGE_XPROTO_VIDEOPROTO
+	select BR2_PACKAGE_XPROTO_XPROTO
+	help
+	  video driver for displaylink USB2 udlfb device

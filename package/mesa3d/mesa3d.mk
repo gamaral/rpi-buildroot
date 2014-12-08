@@ -4,9 +4,15 @@
 #
 ################################################################################
 
-MESA3D_VERSION = 10.2.5
-MESA3D_SOURCE = MesaLib-$(MESA3D_VERSION).tar.bz2
-MESA3D_SITE = ftp://ftp.freedesktop.org/pub/mesa/$(MESA3D_VERSION)
+#MESA3D_VERSION = 10.2.5
+#MESA3D_SOURCE = MesaLib-$(MESA3D_VERSION).tar.bz2
+#MESA3D_SITE = ftp://ftp.freedesktop.org/pub/mesa/$(MESA3D_VERSION)
+
+# Find the latest Mesa git tag for use on VC4 at
+# http://cgit.freedesktop.org/mesa/mesa/log/?qt=grep&q=vc4
+MESA3D_VERSION = befdff81423a1b6a05969dfde59bfa9c521c4621
+MESA3D_SITE = git://anongit.freedesktop.org/mesa/mesa
+
 MESA3D_LICENSE = MIT, SGI, Khronos
 MESA3D_LICENSE_FILES = docs/license.html
 MESA3D_AUTORECONF = YES
@@ -58,6 +64,7 @@ endif
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_NOUVEAU)  += nouveau
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SVGA)     += svga
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST)   += swrast
+MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VC4)      += vc4
 # DRI Drivers
 MESA3D_DRI_DRIVERS-$(BR2_PACKAGE_MESA3D_DRI_DRIVER_SWRAST) += swrast
 MESA3D_DRI_DRIVERS-$(BR2_PACKAGE_MESA3D_DRI_DRIVER_I965)   += i965
@@ -69,6 +76,8 @@ MESA3D_CONF_OPT += \
 else
 MESA3D_CONF_OPT += \
 	--enable-shared-glapi \
+	--enable-gallium-egl \
+	--enable-gallium-gbm \
 	--with-gallium-drivers=$(subst $(space),$(comma),$(MESA3D_GALLIUM_DRIVERS-y))
 endif
 
