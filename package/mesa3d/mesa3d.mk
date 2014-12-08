@@ -10,7 +10,7 @@
 
 # Find the latest Mesa git tag for use on VC4 at
 # http://cgit.freedesktop.org/mesa/mesa/log/?qt=grep&q=vc4
-MESA3D_VERSION = 52a7cb2ec465497bf6a4e20558340b45fbe7d7c3
+MESA3D_VERSION = befdff81423a1b6a05969dfde59bfa9c521c4621
 MESA3D_SITE = git://anongit.freedesktop.org/mesa/mesa
 
 MESA3D_LICENSE = MIT, SGI, Khronos
