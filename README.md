@@ -33,15 +33,7 @@ use with the test-drive image, download and usage instructions below:
 	wget http://dl.guillermoamaral.com/rpi/rpi-buildroot-toolchain.tar.xz
 	tar -xvJf rpi-buildroot-toolchain.tar.xz
 	source rpi-buildroot-toolchain-x86_64/env
-	$CC -I"${BUILDROOT_STAGING_DIR}/usr/include" \
-	    -I"${BUILDROOT_STAGING_DIR}/opt/vc/include" \
-	    -L"${BUILDROOT_STAGING_DIR}/opt/vc/lib" \
-	    -L"${BUILDROOT_STAGING_DIR}/usr/lib" \
-	    -L"${BUILDROOT_STAGING_DIR}/lib" \
-	    -L"${BUILDROOT_TARGET_DIR}/opt/vc/lib" \
-	    -L"${BUILDROOT_TARGET_DIR}/usr/lib" \
-	    -L"${BUILDROOT_TARGET_DIR}/lib" \
-	    main.c # example usage
+	$CC rpi-buildroot-toolchain-x86_64/main.c # example usage
 
 If you're interested in using the toolchain with CMake, you may want to
 download the toolchain cmake file used with Marshmallow Game Engine:
