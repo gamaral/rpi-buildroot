@@ -132,7 +132,6 @@ endif
 if BR2_PACKAGE_BUSYBOX_SHOW_OTHERS
 	source "package/sed/Config.in"
 endif
-	source "package/swig/Config.in"
 	source "package/sstrip/Config.in"
 	source "package/subversion/Config.in"
 if BR2_PACKAGE_BUSYBOX_SHOW_OTHERS
@@ -278,6 +277,7 @@ menu "Firmware"
 	source "package/am33x-cm3/Config.in"
 	source "package/b43-firmware/Config.in"
 	source "package/linux-firmware/Config.in"
+	source "package/rpi-firmware/Config.in"
 	source "package/sunxi-boards/Config.in"
 	source "package/ux500-firmware/Config.in"
 	source "package/zd1211-firmware/Config.in"
@@ -358,6 +358,7 @@ endif
 	source "package/pps-tools/Config.in"
 	source "package/read-edid/Config.in"
 	source "package/rng-tools/Config.in"
+	source "package/rpi-userland/Config.in"
 	source "package/sane-backends/Config.in"
 	source "package/sdparm/Config.in"
 	source "package/setserial/Config.in"
@@ -1245,8 +1246,5 @@ if BR2_PACKAGE_BUSYBOX_SHOW_OTHERS
 	source "package/vim/Config.in"
 endif
 endmenu
-
-# Raspberry Pi specific
-source "package/raspberrypi/Config.in"
 
 endmenu
