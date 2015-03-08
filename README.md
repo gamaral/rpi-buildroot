@@ -1,7 +1,7 @@
 Buildroot for Raspberry Pi
 ==========================
 
-This buildroot fork will produce a very light-weight and trimmed down
+This buildroot *overlay* will produce a very light-weight and trimmed down
 toolchain, rootfs and kernel for the Raspberry Pi. It's intended for **advanced
 users** and specific embedded applications.
 
@@ -23,25 +23,13 @@ You can test drive rpi-buildroot by following the instructions below:
 	xz -d sdcard.img.xz
 	sudo dd if=sdcard.img of=/dev/sdx # replace *sdx* with your actual sdcard device node
 
-The default user is **root**, no password will be requested.
+There's now also a test drive image for the Raspberry Pi 2:
 
-### Toolchain
+	wget http://dl.guillermoamaral.com/rpi/sdcard2.img.xz
+	xz -d sdcard2.img.xz
+	sudo dd if=sdcard2.img of=/dev/sdx # replace *sdx* with your actual sdcard device node
 
-I've added a x86 64-bit toolchain, it has everything needed to cross-compile software for
-use with the test-drive image, download and usage instructions below:
-
-	wget http://dl.guillermoamaral.com/rpi/rpi-buildroot-toolchain.tar.xz
-	tar -xvJf rpi-buildroot-toolchain.tar.xz
-	source rpi-buildroot-toolchain-x86_64/env
-	$CC rpi-buildroot-toolchain-x86_64/main.c # example usage
-
-If you're interested in using the toolchain with CMake, you may want to
-download the toolchain cmake file used with Marshmallow Game Engine:
-
-	wget https://github.com/gamaral/marshmallow_h/blob/master/cmake/Toolchain-buildroot.cmake
-	# The **env** file needs to be **sourced** before executing the following command
-	cmake -DCMAKE_TOOLCHAIN_FILE=Toolchain-buildroot.cmake .
-	make
+The default user is **root**, no password is required.
 
 Building
 --------
