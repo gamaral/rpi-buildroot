@@ -81,11 +81,11 @@ fi
 
 # sanity check
 
-if [ ! -d "images/boot" ] || [ ! -f "images/rootfs.tar" ]; then
-	if [ -d "output/images/boot" ] && [ -f "output/images/rootfs.tar" ]; then
+if [ ! -d "images/rpi-firmware" ] || [ ! -f "images/rootfs.tar" ]; then
+	if [ -d "output/images/rpi-firmware" ] && [ -f "output/images/rootfs.tar" ]; then
 		OUTPUT_PREFIX="output/"
 	else
-		echo "Didn't find boot and/or rootfs.tar! ABORT."
+		echo "Didn't find rpi-firmware and/or rootfs.tar! ABORT."
 		exit 1
 	fi
 fi
@@ -136,7 +136,12 @@ mkdir .mnt
 section "Populating boot partition..."
 
 mount "${SDCARD}1" .mnt || exit 2
-cp ${OUTPUT_PREFIX}images/boot/* .mnt
+cp -r ${OUTPUT_PREFIX}images/rpi-firmware/overlays .mnt
+cp ${OUTPUT_PREFIX}images/rpi-firmware/*.dtb .mnt
+cp ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
+cp ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
+cp ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
+cp ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
 umount .mnt
 
 # fill rootfs
