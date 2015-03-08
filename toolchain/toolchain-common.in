@@ -122,7 +122,7 @@ config BR2_USE_MMU
 
 config BR2_TARGET_OPTIMIZATION
 	string "Target Optimizations"
-	default "-pipe"
+	default ""
 	help
 	  Optimizations to use when building for the target host.
 	  NOTE: gcc optimization level is defined in build options.
@@ -217,10 +217,20 @@ config BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
 	bool
 	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_16
 
+config BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_18
+	bool
+	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
+
+config BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_19
+	bool
+	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_18
+
 # This order guarantees that the highest version is set, as kconfig
 # stops affecting a value on the first matching default.
 config BR2_TOOLCHAIN_HEADERS_AT_LEAST
 	string
+	default "3.19" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_19
+	default "3.18" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_18
 	default "3.17" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
 	default "3.16" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_16
 	default "3.15" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_15
