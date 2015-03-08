@@ -25,7 +25,7 @@ IMAGE="sdcard.img"
 OUTPUT_PREFIX=""
 
 if [ -z "${SIZE}" ]; then
-    SIZE="64M"
+    SIZE="128M"
 fi
 
 echo "Creating ${SIZE} size image..."
@@ -124,7 +124,12 @@ ${MKDIR} .mnt
 section "Populating boot partition..."
 
 ${MOUNT} "${LOOP}p1" .mnt || exit 2
-${CP} ${OUTPUT_PREFIX}images/boot/* .mnt
+${CP} -r ${OUTPUT_PREFIX}images/rpi-firmware/overlays .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/*.dtb .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
+${CP} ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
 ${UMOUNT} .mnt
 
 # fill rootfs
