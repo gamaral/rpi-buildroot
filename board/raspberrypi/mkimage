@@ -115,7 +115,7 @@ ${LOSETUP} -P ${LOOP} ${IMAGE} || exit 1
 section "Formatting partitions..."
 
 ${MKFS_VFAT} -F 16 -n BOOT -I "${LOOP}p1" || exit 1
-${MKFS_EXT4} -L rootfs "${LOOP}p2" || exit 1
+${MKFS_EXT4} -F -q -L rootfs "${LOOP}p2" || exit 1
 
 ${MKDIR} .mnt
 
@@ -137,7 +137,7 @@ ${UMOUNT} .mnt
 section "Populating rootfs partition..."
 
 ${MOUNT} "${LOOP}p2" .mnt || exit 2
-${TAR} -xvpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
+${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
 ${UMOUNT} .mnt
 
 ${SYNC}
