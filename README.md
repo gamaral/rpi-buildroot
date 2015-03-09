@@ -36,7 +36,7 @@ Building
 
 	git clone --depth 1 git://github.com/gamaral/rpi-buildroot.git
 	cd rpi-buildroot
-	make raspberrypi_defconfig
+	make raspberrypi_defconfig # if your target is a Raspberry Pi 2, use 'raspberrypi2_defconfig'
 	make nconfig         # if you want to add packages or fiddle around with it
 	make                 # build (NOTICE: Don't use the **-j** switch, it's set to auto-detect)
 
