@@ -142,6 +142,7 @@ cp ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
 cp ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
 cp ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
 cp ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
+sync
 umount .mnt
 
 # fill rootfs
@@ -150,6 +151,7 @@ section "Populating rootfs partition..."
 
 mount "${SDCARD}2" .mnt || exit 2
 ${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
+sync
 umount .mnt
 
 # clean up
