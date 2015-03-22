@@ -90,7 +90,7 @@ Create the partitions on the SD card. Run the following as root.
 Now format the boot partition as FAT 16
 
 	# run the following as root
-	mkfs.vfat -F16 -n boot /dev/sdx1
+	mkfs.vfat -F16 -n BOOT /dev/sdx1
 	mkdir -p /media/boot
 	mount /dev/sdx1 /media/boot
 
@@ -98,7 +98,7 @@ You will need to copy all the files in *output/images/boot* to your *boot*
 partition.
 
 	# run the following as root
-	cp output/images/boot/* /media/boot
+	cp -r output/images/rpi-firmware/* /media/boot
 	umount /media/boot
 
 The second (rootfs) can be as big as you want, but with a 200 MB minimum,
