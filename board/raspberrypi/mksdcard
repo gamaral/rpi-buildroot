@@ -29,7 +29,6 @@ confirm() {
 }
 
 section() {
-	sync
 	echo "*****************************************************************************************"
 	echo "> ${*}"
 	echo "*****************************************************************************************"
@@ -65,17 +64,36 @@ fi
 
 # dependencies
 
+CP=`which cp`
 FDISK=`which fdisk`
+MKDIR=`which mkdir`
 MKFS_EXT4=`which mkfs.ext4`
 MKFS_VFAT=`which mkfs.vfat`
+MOUNT=`which mount`
+RMDIR=`which rmdir`
+SYNC=`which sync`
 TAR=`which tar`
+UMOUNT=`which umount`
 
-if [ -z "${FDISK}" ] || [ -z "${MKFS_EXT4}" ] || [ -z "${MKFS_VFAT}" ] || [ -z "${TAR}" ]; then
+if [ -z "${CP}" ] ||
+   [ -z "${FDISK}" ] ||
+   [ -z "${MKDIR}" ] ||
+   [ -z "${MKFS_EXT4}" ] ||
+   [ -z "${MKFS_VFAT}" ] ||
+   [ -z "${MOUNT}" ] ||
+   [ -z "${RMDIR}" ] ||
+   [ -z "${TAR}" ] ||
+   [ -z "${UMOUNT}" ]; then
 	echo "Missing dependencies:\n"
+	echo "CP=${CP}"
 	echo "FDISK=${FDISK}"
+	echo "MKDIR=${MKDIR}"
 	echo "MKFS_EXT4=${MKFS_EXT4}"
 	echo "MKFS_VFAT=${MKFS_VFAT}"
+	echo "MOUNT=${MOUNT}"
+	echo "RMDIR=${RMDIR}"
 	echo "TAR=${TAR}"
+	echo "UMOUNT=${UMOUNT}"
 	exit 1
 fi
 
@@ -129,34 +147,34 @@ ${MKFS_EXT4} -F -q -L rootfs "${SDCARD}2" || exit 1
 
 # prepare to fill partitions
 
-mkdir .mnt
+${MKDIR} .mnt
 
 # fill boot
 
 section "Populating boot partition..."
 
-mount "${SDCARD}1" .mnt || exit 2
-cp -r ${OUTPUT_PREFIX}images/rpi-firmware/overlays .mnt
-cp ${OUTPUT_PREFIX}images/rpi-firmware/*.dtb .mnt
-cp ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
-cp ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
-cp ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
-cp ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
-sync
-umount .mnt
+${MOUNT} "${SDCARD}1" .mnt || exit 2
+${CP} -r ${OUTPUT_PREFIX}images/rpi-firmware/overlays .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/*.dtb .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
+${CP} ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
+${CP} ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
+${SYNC}
+${UMOUNT} .mnt
 
 # fill rootfs
 
 section "Populating rootfs partition..."
 
-mount "${SDCARD}2" .mnt || exit 2
+${MOUNT} "${SDCARD}2" .mnt || exit 2
 ${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
-sync
-umount .mnt
+${SYNC}
+${UMOUNT} .mnt
 
 # clean up
 
-rmdir .mnt
+${RMDIR} .mnt
 
 section "Finished!"
 

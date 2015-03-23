@@ -6,13 +6,13 @@
 #
 
 # sanaty check
-if [ ${UID} -ne 0 ]; then
+USERID=`id -u`
+if [ ${USERID} -ne 0 ]; then
 	echo "${0} requires root privileges in order to work."
 	exit 0
 fi
 
 section() {
-	sync
 	echo "*****************************************************************************************"
 	echo "> ${*}"
 	echo "*****************************************************************************************"
@@ -34,39 +34,42 @@ sleep 3
 # dependencies
 CP=`which cp`
 DD=`which dd`
-MOUNT=`which mount`
-UMOUNT=`which umount`
-MKDIR=`which mkdir`
-RMDIR=`which rmdir`
 FDISK=`which fdisk`
 LOSETUP=`which losetup`
+MKDIR=`which mkdir`
 MKFS_EXT4=`which mkfs.ext4`
 MKFS_VFAT=`which mkfs.vfat`
+MOUNT=`which mount`
+RMDIR=`which rmdir`
+SYNC=`which sync`
 TAR=`which tar`
+UMOUNT=`which umount`
 
 if [ -z "${CP}" ] ||
    [ -z "${DD}" ] ||
-   [ -z "${MOUNT}" ] ||
-   [ -z "${UMOUNT}" ] ||
-   [ -z "${MKDIR}" ] ||
-   [ -z "${RMDIR}" ] ||
    [ -z "${FDISK}" ] ||
    [ -z "${LOSETUP}" ] ||
+   [ -z "${MKDIR}" ] ||
    [ -z "${MKFS_EXT4}" ] ||
    [ -z "${MKFS_VFAT}" ] ||
-   [ -z "${TAR}" ]; then
+   [ -z "${MOUNT}" ] ||
+   [ -z "${RMDIR}" ] ||
+   [ -z "${SYNC}" ] ||
+   [ -z "${TAR}" ] ||
+   [ -z "${UMOUNT}" ]; then
 	echo "Missing dependencies:\n"
 	echo "CP=${CP}"
 	echo "DD=${DD}"
-	echo "MOUNT=${MOUNT}"
-	echo "UMOUNT=${UMOUNT}"
-	echo "MKDIR=${MKDIR}"
-	echo "RMDIR=${RMDIR}"
 	echo "FDISK=${FDISK}"
 	echo "LOSETUP=${LOSETUP}"
+	echo "MKDIR=${MKDIR}"
 	echo "MKFS_EXT4=${MKFS_EXT4}"
 	echo "MKFS_VFAT=${MKFS_VFAT}"
+	echo "MOUNT=${MOUNT}"
+	echo "RMDIR=${RMDIR}"
+	echo "SYNC=${SYNC}"
 	echo "TAR=${TAR}"
+	echo "UMOUNT=${UMOUNT}"
 	exit 1
 fi
 
@@ -130,6 +133,7 @@ ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
 ${CP} ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
+${SYNC}
 ${UMOUNT} .mnt
 
 # fill rootfs
@@ -138,9 +142,8 @@ section "Populating rootfs partition..."
 
 ${MOUNT} "${LOOP}p2" .mnt || exit 2
 ${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
-${UMOUNT} .mnt
-
 ${SYNC}
+${UMOUNT} .mnt
 
 ${RMDIR} .mnt
 
