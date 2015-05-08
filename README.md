@@ -1,9 +1,9 @@
 Buildroot for Raspberry Pi
 ==========================
 
-This buildroot *overlay* will produce a very light-weight and trimmed down
-toolchain, rootfs and kernel for the Raspberry Pi. It's intended for **advanced
-users** and specific embedded applications.
+This buildroot *overlay* will produce a bleeding-edge, light-weight and trimmed
+down toolchain, rootfs and kernel for the Raspberry Pi. It's intended for
+**advanced users** and specific embedded applications.
 
 Before You Begin
 ----------------
