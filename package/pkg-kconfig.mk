@@ -36,11 +36,6 @@ $(2)_KCONFIG_EDITORS ?= menuconfig
 $(2)_KCONFIG_OPTS ?=
 $(2)_KCONFIG_FIXUP_CMDS ?=
 
-# FOO_KCONFIG_FILE is required
-ifndef $(2)_KCONFIG_FILE
-$$(error Internal error: no value specified for $(2)_KCONFIG_FILE)
-endif
-
 # The config file could be in-tree, so before depending on it the package should
 # be extracted (and patched) first
 $$($(2)_KCONFIG_FILE): | $(1)-patch
@@ -72,6 +67,11 @@ $$($(2)_TARGET_CONFIGURE): $$($(2)_DIR)/.stamp_kconfig_fixup_done
 # already called above, so we can effectively use this variable.
 ifeq ($$($$($(2)_KCONFIG_VAR)),y)
 
+# FOO_KCONFIG_FILE is required
+ifndef $(2)_KCONFIG_FILE
+$$(error Internal error: no value specified for $(2)_KCONFIG_FILE)
+endif
+
 # Configuration editors (menuconfig, ...)
 $$(addprefix $(1)-,$$($(2)_KCONFIG_EDITORS)): $$($(2)_DIR)/.stamp_kconfig_fixup_done
 	$$($(2)_MAKE_ENV) $$(MAKE) -C $$($(2)_DIR) \
@@ -99,6 +99,12 @@ $(1)-update-defconfig: $(1)-savedefconfig
 	touch --reference $$($(2)_DIR)/.config $$($(2)_KCONFIG_FILE)
 
 endif # package enabled
+
+.PHONY: \
+	$(1)-update-config \
+	$(1)-update-defconfig \
+	$(1)-savedefconfig \
+	$$(addprefix $(1)-,$$($(2)_KCONFIG_EDITORS))
 
 endef # inner-kconfig-package
 

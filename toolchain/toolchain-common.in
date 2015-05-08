@@ -5,12 +5,6 @@
 # so put it here instead
 source "package/gdb/Config.in.host"
 
-config BR2_LARGEFILE
-	bool
-
-config BR2_INET_IPV6
-	bool
-
 config BR2_TOOLCHAIN_HAS_GCC_BUG_58595
 	bool
 
@@ -225,10 +219,15 @@ config BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_19
 	bool
 	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_18
 
+config BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_0
+	bool
+	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_19
+
 # This order guarantees that the highest version is set, as kconfig
 # stops affecting a value on the first matching default.
 config BR2_TOOLCHAIN_HEADERS_AT_LEAST
 	string
+	default "4.0"  if BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_0
 	default "3.19" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_19
 	default "3.18" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_18
 	default "3.17" if BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17

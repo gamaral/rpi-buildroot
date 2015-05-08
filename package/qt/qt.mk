@@ -38,26 +38,17 @@ QT_CFLAGS = $(TARGET_CFLAGS)
 QT_CXXFLAGS = $(TARGET_CXXFLAGS)
 QT_LDFLAGS = $(TARGET_LDFLAGS)
 
-ifeq ($(BR2_LARGEFILE),y)
-QT_CONFIGURE_OPTS += -largefile
-else
-QT_CONFIGURE_OPTS += -no-largefile
-
-# embedded sqlite module forces FILE_OFFSET_BITS=64 unless this is defined
-# webkit internally uses this module as well
-ifneq ($(BR2_PACKAGE_QT_SQLITE_QT)$(BR2_PACKAGE_QT_WEBKIT),)
-QT_CFLAGS += -DSQLITE_DISABLE_LFS
-QT_CXXFLAGS += -DSQLITE_DISABLE_LFS
-endif
-
-endif
-
 # Qt has some assembly function that are not present in thumb1 mode:
 # Error: selected processor does not support Thumb mode `swp r3,r7,[r4]'
 # so, we desactivate thumb mode
 ifeq ($(BR2_ARM_INSTRUCTIONS_THUMB),y)
 QT_CFLAGS += -marm
 QT_CXXFLAGS += -marm
+endif
+
+ifeq ($(BR2_PACKAGE_QT_QT_COORD_TYPE_DOUBLE),y)
+QT_CFLAGS += -DQT_COORD_TYPE=double
+QT_CXXFLAGS += -DQT_COORD_TYPE=double
 endif
 
 ifeq ($(BR2_PACKAGE_QT_QT3SUPPORT),y)
@@ -359,10 +350,10 @@ QT_DEPENDENCIES += mysql
 endif
 ifeq ($(BR2_PACKAGE_QT_ODBC),y)
 QT_CONFIGURE_OPTS += -qt-sql-odbc
+QT_DEPENDENCIES += unixodbc
 endif
 ifeq ($(BR2_PACKAGE_QT_PSQL),y)
-QT_CONFIGURE_OPTS += -qt-sql-psql
-QT_CONFIGURE_ENV += PSQL_LIBS=-L$(STAGING_DIR)/usr/lib
+QT_CONFIGURE_OPTS += -qt-sql-psql -psql_config $(STAGING_DIR)/usr/bin/pg_config
 QT_DEPENDENCIES += postgresql
 endif
 ifeq ($(BR2_PACKAGE_QT_SQLITE_QT),y)
@@ -487,13 +478,6 @@ define QT_QMAKE_SET
 	$(SED) '/$(1)/d' $(3)/mkspecs/qws/linux-$(QT_EMB_PLATFORM)-g++/qmake.conf
 	$(SED) '/include.*qws.conf/a$(1) = $(2)' $(3)/mkspecs/qws/linux-$(QT_EMB_PLATFORM)-g++/qmake.conf
 endef
-
-ifneq ($(BR2_INET_IPV6),y)
-define QT_CONFIGURE_IPV6
-	$(SED) 's/^CFG_IPV6=auto/CFG_IPV6=no/' $(@D)/configure
-	$(SED) 's/^CFG_IPV6IFNAME=auto/CFG_IPV6IFNAME=no/' $(@D)/configure
-endef
-endif
 
 ifneq ($(QT_CONFIG_FILE),)
 define QT_CONFIGURE_CONFIG_FILE
