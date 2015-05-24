@@ -4,7 +4,8 @@
 #
 ################################################################################
 
-PHP_VERSION = 5.6.8
+PHP_VERSION_MAJOR = 5.6
+PHP_VERSION = $(PHP_VERSION_MAJOR).9
 PHP_SITE = http://www.php.net/distributions
 PHP_SOURCE = php-$(PHP_VERSION).tar.xz
 PHP_INSTALL_STAGING = YES
@@ -109,6 +110,11 @@ endif
 ifeq ($(BR2_PACKAGE_PHP_EXT_OPENSSL),y)
 PHP_CONF_OPTS += --with-openssl=$(STAGING_DIR)/usr
 PHP_DEPENDENCIES += openssl
+# openssl needs zlib, but the configure script forgets to link against
+# it causing detection failures with static linking
+ifeq ($(BR2_STATIC_LIBS),y)
+PHP_CONF_ENV += LIBS='-lz'
+endif
 endif
 
 ifeq ($(BR2_PACKAGE_PHP_EXT_LIBXML2),y)
@@ -275,6 +281,8 @@ define PHP_INSTALL_FPM_CONF
 	$(INSTALL) -D -m 0644 package/php/php-fpm.conf \
 		$(TARGET_DIR)/etc/php-fpm.conf
 	rm -f $(TARGET_DIR)/etc/php-fpm.conf.default
+	# remove unused sample status page /usr/php/php/fpm/status.html
+	rm -rf $(TARGET_DIR)/usr/php
 endef
 
 PHP_POST_INSTALL_TARGET_HOOKS += PHP_INSTALL_FPM_CONF
@@ -290,12 +298,15 @@ endef
 PHP_POST_INSTALL_TARGET_HOOKS += PHP_EXTENSIONS_FIXUP
 
 define PHP_INSTALL_FIXUP
-	rm -rf $(TARGET_DIR)/usr/lib/php
+	rm -rf $(TARGET_DIR)/usr/lib/php/build
 	rm -f $(TARGET_DIR)/usr/bin/phpize
 	$(INSTALL) -D -m 0755 $(PHP_DIR)/php.ini-production \
 		$(TARGET_DIR)/etc/php.ini
 	$(SED) 's%;date.timezone =.*%date.timezone = $(PHP_LOCALTIME)%' \
 		$(TARGET_DIR)/etc/php.ini
+	$(if $(BR2_PACKAGE_PHP_EXT_OPCACHE),
+		$(SED) '/;extension=php_xsl.dll/azend_extension=opcache.so' \
+		$(TARGET_DIR)/etc/php.ini)
 endef
 
 PHP_POST_INSTALL_TARGET_HOOKS += PHP_INSTALL_FIXUP

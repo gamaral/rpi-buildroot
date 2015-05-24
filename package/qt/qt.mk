@@ -46,11 +46,6 @@ QT_CFLAGS += -marm
 QT_CXXFLAGS += -marm
 endif
 
-ifeq ($(BR2_PACKAGE_QT_QT_COORD_TYPE_DOUBLE),y)
-QT_CFLAGS += -DQT_COORD_TYPE=double
-QT_CXXFLAGS += -DQT_COORD_TYPE=double
-endif
-
 ifeq ($(BR2_PACKAGE_QT_QT3SUPPORT),y)
 QT_CONFIGURE_OPTS += -qt3support
 else
@@ -224,6 +219,8 @@ else ifeq ($(BR2_mips)$(BR2_mipsel),y)
 QT_EMB_PLATFORM = mips
 else ifeq ($(BR2_powerpc),y)
 QT_EMB_PLATFORM = powerpc
+else ifeq ($(BR2_sh4)$(BR2_sh4eb)$(BR2_sh4a)$(BR2_sh4aeb),y)
+QT_EMB_PLATFORM = sh
 else
 QT_EMB_PLATFORM = generic
 endif
