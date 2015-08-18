@@ -4,13 +4,17 @@
 #
 ################################################################################
 
-E2FSPROGS_VERSION = 1.42.12
+E2FSPROGS_VERSION = 1.42.13
 E2FSPROGS_SOURCE = e2fsprogs-$(E2FSPROGS_VERSION).tar.xz
 E2FSPROGS_SITE = $(BR2_KERNEL_MIRROR)/linux/kernel/people/tytso/e2fsprogs/v$(E2FSPROGS_VERSION)
 E2FSPROGS_LICENSE = GPLv2, libuuid BSD-3c, libss and libet MIT-like with advertising clause
 E2FSPROGS_LICENSE_FILES = COPYING lib/uuid/COPYING lib/ss/mit-sipb-copyright.h lib/et/internal.h
 E2FSPROGS_INSTALL_STAGING = YES
 E2FSPROGS_INSTALL_STAGING_OPTS = DESTDIR=$(STAGING_DIR) install-libs
+
+# e4defrag doesn't build on older systems like RHEL5.x, and we don't
+# need it on the host anyway.
+HOST_E2FSPROGS_CONF_OPTS += --disable-defrag
 
 E2FSPROGS_CONF_OPTS = \
 	$(if $(BR2_STATIC_LIBS),,--enable-elf-shlibs) \
@@ -102,6 +106,22 @@ ifeq ($(BR2_PACKAGE_E2FSPROGS_E2FSCK),y)
 E2FSPROGS_POST_INSTALL_TARGET_HOOKS += E2FSPROGS_TARGET_E2FSCK_SYMLINKS
 endif
 
+# Remove busybox tune2fs and e2label, since we want the e2fsprogs full
+# blown variants to take precedence, but they are not installed in the
+# same location.
+ifeq ($(BR2_PACKAGE_BUSYBOX),y)
+E2FSPROGS_DEPENDENCIES += busybox
+
+define E2FSPROGS_REMOVE_BUSYBOX_APPLETS
+	$(RM) -f $(TARGET_DIR)/bin/chattr
+	$(RM) -f $(TARGET_DIR)/bin/lsattr
+	$(RM) -f $(TARGET_DIR)/sbin/fsck
+	$(RM) -f $(TARGET_DIR)/sbin/tune2fs
+	$(RM) -f $(TARGET_DIR)/sbin/e2label
+endef
+E2FSPROGS_POST_INSTALL_TARGET_HOOKS += E2FSPROGS_REMOVE_BUSYBOX_APPLETS
+endif
+
 define E2FSPROGS_TARGET_TUNE2FS_SYMLINK
 	ln -sf e2label $(TARGET_DIR)/usr/sbin/tune2fs
 endef
@@ -116,6 +136,15 @@ endef
 
 ifeq ($(BR2_PACKAGE_E2FSPROGS_FINDFS),y)
 E2FSPROGS_POST_INSTALL_TARGET_HOOKS += E2FSPROGS_TARGET_FINDFS_SYMLINK
+endif
+
+# systemd really wants to have fsck in /sbin
+define E2FSPROGS_TARGET_FSCK_SYMLINK
+	ln -sf ../usr/sbin/fsck $(TARGET_DIR)/sbin/fsck
+endef
+
+ifeq ($(BR2_PACKAGE_E2FSPROGS_FSCK),y)
+E2FSPROGS_POST_INSTALL_TARGET_HOOKS += E2FSPROGS_TARGET_FSCK_SYMLINK
 endif
 
 $(eval $(autotools-package))

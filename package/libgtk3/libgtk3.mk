@@ -5,7 +5,7 @@
 ################################################################################
 
 LIBGTK3_VERSION_MAJOR = 3.14
-LIBGTK3_VERSION = $(LIBGTK3_VERSION_MAJOR).11
+LIBGTK3_VERSION = $(LIBGTK3_VERSION_MAJOR).13
 LIBGTK3_SOURCE = gtk+-$(LIBGTK3_VERSION).tar.xz
 LIBGTK3_SITE = http://ftp.gnome.org/pub/gnome/sources/gtk+/$(LIBGTK3_VERSION_MAJOR)
 LIBGTK3_LICENSE = LGPLv2+
@@ -149,8 +149,7 @@ HOST_LIBGTK3_DEPENDENCIES = \
 	host-pkgconf
 
 HOST_LIBGTK3_CFLAGS = \
-	$(shell $(HOST_DIR)/usr/bin/pkgconf \
-	--cflags --libs gdk-pixbuf-2.0)
+	`$(HOST_DIR)/usr/bin/pkgconf --cflags --libs gdk-pixbuf-2.0`
 
 define HOST_LIBGTK3_CONFIGURE_CMDS
 	echo "#define GETTEXT_PACKAGE \"gtk30\"" >> $(@D)/gtk/config.h

@@ -35,8 +35,9 @@ config BR2_PACKAGE_LIBFOO
 
 The +bool+ line, +help+ line and other metadata information about the
 configuration option must be indented with one tab. The help text
-itself should be indented with one tab and two spaces, and it must
-mention the upstream URL of the project.
+itself should be indented with one tab and two spaces, lines should
+not be longer than 72 columns, and it must mention the upstream URL
+of the project.
 
 You can add other sub-options into a +if
 BR2_PACKAGE_LIBFOO...endif+ statement to configure particular things
@@ -274,6 +275,12 @@ use in the comment.
 ** Dependency symbol: +BR2_TOOLCHAIN_HEADERS_AT_LEAST_X_Y+, (replace
    +X_Y+ with the proper version, see +toolchain/toolchain-common.in+)
 ** Comment string: +headers >= X.Y+ and/or `headers <= X.Y` (replace
+   +X.Y+ with the proper version)
+
+* GCC version
+** Dependency symbol: +BR2_TOOLCHAIN_GCC_AT_LEAST_X_Y+, (replace
+   +X_Y+ with the proper version, see +toolchain/toolchain-common.in+)
+** Comment string: +gcc >= X.Y+ and/or `gcc <= X.Y` (replace
    +X.Y+ with the proper version)
 
 * C library

@@ -98,7 +98,11 @@ You will need to copy all the files in *output/images/boot* to your *boot*
 partition.
 
 	# run the following as root
-	cp -r output/images/rpi-firmware/* /media/boot
+	cp output/images/rpi-firmware/bootcode.bin /media/boot
+	cp output/images/rpi-firmware/fixup.dat /media/boot
+	cp output/images/rpi-firmware/start.elf /media/boot
+	cp output/images/zImage /media/boot/kernel.img
+	cp output/images/*.dtb /media/boot
 	umount /media/boot
 
 The second (rootfs) can be as big as you want, but with a 200 MB minimum,

@@ -44,6 +44,7 @@ endef
 # Languages supported by the cross-compiler
 GCC_FINAL_CROSS_LANGUAGES-y = c
 GCC_FINAL_CROSS_LANGUAGES-$(BR2_INSTALL_LIBSTDCPP) += c++
+GCC_FINAL_CROSS_LANGUAGES-$(BR2_TOOLCHAIN_BUILDROOT_FORTRAN) += fortran
 GCC_FINAL_CROSS_LANGUAGES = $(subst $(space),$(comma),$(GCC_FINAL_CROSS_LANGUAGES-y))
 
 HOST_GCC_FINAL_CONF_OPTS = \
@@ -131,9 +132,9 @@ endef
 HOST_GCC_FINAL_POST_INSTALL_HOOKS += HOST_GCC_FINAL_INSTALL_LIBGCC
 
 define HOST_GCC_FINAL_INSTALL_LIBATOMIC
-	-cp -dpf $(HOST_DIR)/usr/$(GNU_TARGET_NAME)/lib*/libatomic* \
+	-cp -dpf $(HOST_GCC_FINAL_GCC_LIB_DIR)/libatomic* \
 		$(STAGING_DIR)/lib/
-	-cp -dpf $(HOST_DIR)/usr/$(GNU_TARGET_NAME)/lib*/libatomic* \
+	-cp -dpf $(HOST_GCC_FINAL_GCC_LIB_DIR)/libatomic* \
 		$(TARGET_DIR)/lib/
 endef
 
@@ -144,6 +145,10 @@ HOST_GCC_FINAL_USR_LIBS =
 
 ifeq ($(BR2_INSTALL_LIBSTDCPP),y)
 HOST_GCC_FINAL_USR_LIBS += libstdc++
+endif
+
+ifeq ($(BR2_TOOLCHAIN_BUILDROOT_FORTRAN),y)
+HOST_GCC_FINAL_USR_LIBS += libgfortran
 endif
 
 ifeq ($(BR2_GCC_ENABLE_OPENMP),y)

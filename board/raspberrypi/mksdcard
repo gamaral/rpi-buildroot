@@ -154,12 +154,11 @@ ${MKDIR} .mnt
 section "Populating boot partition..."
 
 ${MOUNT} "${SDCARD}1" .mnt || exit 2
-${CP} -r ${OUTPUT_PREFIX}images/rpi-firmware/overlays .mnt
-${CP} ${OUTPUT_PREFIX}images/rpi-firmware/*.dtb .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
 ${CP} ${OUTPUT_PREFIX}images/zImage .mnt/kernel.img
+${CP} ${OUTPUT_PREFIX}images/*.dtb .mnt
 ${SYNC}
 ${UMOUNT} .mnt
 

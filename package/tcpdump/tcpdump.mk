@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-TCPDUMP_VERSION = 4.7.3
+TCPDUMP_VERSION = 4.7.4
 TCPDUMP_SITE = http://www.tcpdump.org/release
 TCPDUMP_LICENSE = BSD-3c
 TCPDUMP_LICENSE_FILES = LICENSE
@@ -19,7 +19,7 @@ TCPDUMP_CONF_OPTS = \
 TCPDUMP_DEPENDENCIES = zlib libpcap
 
 ifeq ($(BR2_STATIC_LIBS),y)
-TCPDUMP_CONF_OPTS += LIBS="$(shell $(STAGING_DIR)/usr/bin/pcap-config --static --additional-libs)"
+TCPDUMP_CONF_OPTS += LIBS="`$(STAGING_DIR)/usr/bin/pcap-config --static --additional-libs`"
 endif
 
 # make install installs an unneeded extra copy of the tcpdump binary

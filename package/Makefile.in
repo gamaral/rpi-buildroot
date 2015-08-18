@@ -18,7 +18,8 @@ PARALLEL_JOBS := $(BR2_JLEVEL)
 endif
 
 MAKE1 := $(HOSTMAKE) -j1
-MAKE := $(HOSTMAKE) $(if $(PARALLEL_JOBS),-j$(PARALLEL_JOBS))
+override MAKE = $(HOSTMAKE) \
+	$(if $(findstring j,$(filter-out --%,$(MAKEFLAGS))),,-j$(PARALLEL_JOBS))
 
 ifeq ($(BR2_TOOLCHAIN_BUILDROOT),y)
 TARGET_VENDOR = $(call qstrip,$(BR2_TOOLCHAIN_BUILDROOT_VENDOR))
@@ -373,12 +374,6 @@ ifneq ($(BR2_INSTALL_LIBSTDCPP),y)
 TARGET_CONFIGURE_OPTS += CXX=false
 endif
 
-ifeq ($(BR2_ENABLE_DEBUG),y)
-ENABLE_DEBUG := --enable-debug
-else
-ENABLE_DEBUG := --disable-debug
-endif
-
 ifeq ($(BR2_STATIC_LIBS),y)
 SHARED_STATIC_LIBS_OPTS = --enable-static --disable-shared
 TARGET_CFLAGS += -static
@@ -404,3 +399,4 @@ include package/pkg-virtual.mk
 include package/pkg-generic.mk
 include package/pkg-kconfig.mk
 include package/pkg-rebar.mk
+include package/pkg-kernel-module.mk
