@@ -141,9 +141,13 @@ sleep 1
 # format partitions
 
 section "Formatting partitions..."
-
-${MKFS_VFAT} -F 16 -n BOOT -I "${SDCARD}1" || exit 1
-${MKFS_EXT4} -F -q -L rootfs "${SDCARD}2" || exit 1
+if [[ "$SDCARD" = "/dev/mmcblk"* ]]; then
+	${MKFS_VFAT} -F 16 -n BOOT -I "${SDCARD}p1" || exit 1
+  ${MKFS_EXT4} -F -q -L rootfs "${SDCARD}p2" || exit 1
+else
+	${MKFS_VFAT} -F 16 -n BOOT -I "${SDCARD}1" || exit 1
+	${MKFS_EXT4} -F -q -L rootfs "${SDCARD}2" || exit 1
+fi
 
 # prepare to fill partitions
 
@@ -152,8 +156,12 @@ ${MKDIR} .mnt
 # fill boot
 
 section "Populating boot partition..."
+if [[ "$SDCARD" = "/dev/mmcblk"* ]]; then
+ 	${MOUNT} "${SDCARD}p1" .mnt || exit 2
+else
+	${MOUNT} "${SDCARD}1" .mnt || exit 2
+fi
 
-${MOUNT} "${SDCARD}1" .mnt || exit 2
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/bootcode.bin .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/fixup.dat .mnt
 ${CP} ${OUTPUT_PREFIX}images/rpi-firmware/start.elf .mnt
@@ -165,8 +173,11 @@ ${UMOUNT} .mnt
 # fill rootfs
 
 section "Populating rootfs partition..."
-
-${MOUNT} "${SDCARD}2" .mnt || exit 2
+if [[ "$SDCARD" = "/dev/mmcblk"* ]]; then
+ ${MOUNT} "${SDCARD}p2" .mnt || exit 2
+else
+	${MOUNT} "${SDCARD}2" .mnt || exit 2
+fi
 ${TAR} -xpsf ${OUTPUT_PREFIX}images/rootfs.tar -C .mnt
 ${SYNC}
 ${UMOUNT} .mnt
