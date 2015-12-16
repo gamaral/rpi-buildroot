@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBECORE_VERSION = $(EFL_VERSION)
+LIBECORE_VERSION = 1.7.10
 LIBECORE_SOURCE = ecore-$(LIBECORE_VERSION).tar.bz2
 LIBECORE_SITE = http://download.enlightenment.org/releases
 LIBECORE_LICENSE = BSD-2c
@@ -97,7 +97,7 @@ define LIBECORE_BUILD_MAKEKEYS_FOR_HOST
 	$(HOST_CONFIGURE_OPTS) $(MAKE1) -C $(@D)/src/util makekeys.o makekeys
 endef
 
-LIBECORE_POST_EXTRACT_HOOKS += LIBECORE_BUILD_MAKEKEYS_FOR_HOST
+LIBECORE_PRE_CONFIGURE_HOOKS += LIBECORE_BUILD_MAKEKEYS_FOR_HOST
 else
 LIBECORE_CONF_OPTS += --disable-ecore-x-xcb
 endif

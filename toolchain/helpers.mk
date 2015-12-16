@@ -79,9 +79,7 @@ copy_toolchain_lib_root = \
 			fi ; \
 			LIBPATH="`readlink -f $${LIBPATH}`"; \
 		done; \
-	done; \
-\
-	echo -n
+	done
 
 #
 # Copy the full external toolchain sysroot directory to the staging
@@ -150,7 +148,7 @@ copy_toolchain_sysroot = \
 		fi ; \
 		mkdir -p `dirname $(STAGING_DIR)/$${ARCH_SUBDIR}` ; \
 		relpath="./" ; \
-		nbslashs=`echo -n $${ARCH_SUBDIR} | sed 's%[^/]%%g' | wc -c` ; \
+		nbslashs=`printf $${ARCH_SUBDIR} | sed 's%[^/]%%g' | wc -c` ; \
 		for slash in `seq 1 $${nbslashs}` ; do \
 			relpath=$${relpath}"../" ; \
 		done ; \

@@ -23,11 +23,24 @@ comment "libv4l JPEG support not enabled"
 
 config BR2_PACKAGE_LIBV4L_UTILS
 	bool "v4l-utils tools"
+	depends on BR2_ENABLE_LOCALE
+	select BR2_PACKAGE_GETTEXT if BR2_NEEDS_GETTEXT_IF_LOCALE
 	help
 	  v4l-utils is a collection of various video4linux and DVB utilities.
 	  Enable this if you want to build the following tools:
-	  cx18-ctl, ir-keytable, ivtv-ctl, v4l2-ctl, v4l2-sysfs-path and
-	  others.
+	  - cx18-ctl
+	  - dvb-fe-tool, dvbv5-zap, dvbv5-scan, dvb-format-convert
+	  - decode_tm6000
+	  - ir-keytable
+	  - media-ctl
+	  - v4l2-compliance
+	  - v4l2-ctl, cx18-ctl, ivtv-ctl
+	  - v4l2-sysfs-path
+	  - rds-ctl
+	  - qv4l2 (if Qt is enabled)
+
+comment "libv4l-utils tools need a toolchain w/ locale"
+	depends on !BR2_ENABLE_LOCALE
 
 endif
 

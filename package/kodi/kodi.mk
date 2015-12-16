@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-KODI_VERSION = 15.0-Isengard
+KODI_VERSION = 15.2-Isengard
 KODI_SITE = $(call github,xbmc,xbmc,$(KODI_VERSION))
 KODI_LICENSE = GPLv2
 KODI_LICENSE_FILES = LICENSE.GPL
@@ -34,7 +34,6 @@ KODI_CONF_OPTS +=  \
 	--disable-openmax \
 	--disable-projectm \
 	--disable-pulse \
-	--disable-ssh \
 	--disable-vdpau \
 	--disable-vtbdecoder \
 	--enable-optimizations
@@ -170,6 +169,13 @@ KODI_DEPENDENCIES += libshairplay
 KODI_CONF_OPTS += --enable-airplay
 else
 KODI_CONF_OPTS += --disable-airplay
+endif
+
+ifeq ($(BR2_PACKAGE_KODI_LIBSSH),y)
+KODI_DEPENDENCIES += libssh
+KODI_CONF_OPTS += --enable-ssh
+else
+KODI_CONF_OPTS += --disable-ssh
 endif
 
 ifeq ($(BR2_PACKAGE_KODI_AVAHI),y)
