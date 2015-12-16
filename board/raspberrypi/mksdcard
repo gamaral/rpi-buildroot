@@ -138,14 +138,16 @@ END
 
 sleep 1
 
+# figure out partition pattern
+
+case "${SDCARD}" in
+	*mmcblk*) SDCARDP="${SDCARD}p" ;;
+	*)        SDCARDP="${SDCARD}"  ;;
+esac
+
 # format partitions
 
 section "Formatting partitions..."
-if [[ "${SDCARD}" = "/dev/mmcblk"* ]]; then
-    SDCARDP="${SDCARD}p"
-else
-    SDCARDP=${SDCARD}
-fi
 
 ${MKFS_VFAT} -F 16 -n BOOT -I "${SDCARDP}1" || exit 1
 ${MKFS_EXT4} -F -q -L rootfs "${SDCARDP}2" || exit 1
