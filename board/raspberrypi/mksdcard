@@ -141,7 +141,7 @@ sleep 1
 # format partitions
 
 section "Formatting partitions..."
-if [[ "${SDCARD}" = "/dev/mmcblk"* ]]; then
+if [ `echo ${SDCARD} | grep -c "/dev/mmcblk"` -eq 1 ]; then
     SDCARDP="${SDCARD}p"
 else
     SDCARDP=${SDCARD}
