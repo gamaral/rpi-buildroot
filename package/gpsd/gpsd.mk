@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GPSD_VERSION = 3.15
+GPSD_VERSION = 3.16
 GPSD_SITE = http://download-mirror.savannah.gnu.org/releases/gpsd
 GPSD_LICENSE = BSD-3c
 GPSD_LICENSE_FILES = COPYING
@@ -65,6 +65,12 @@ ifeq ($(BR2_PACKAGE_BLUEZ_UTILS),y)
 GPSD_DEPENDENCIES += bluez_utils
 else
 GPSD_SCONS_OPTS += bluez=no
+endif
+
+# If pps-tools is available, build it before so the package can use it
+# (HAVE_SYS_TIMEPPS_H).
+ifeq ($(BR2_PACKAGE_PPS_TOOLS),y)
+GPSD_DEPENDENCIES += pps-tools
 endif
 
 ifeq ($(BR2_PACKAGE_DBUS_GLIB),y)

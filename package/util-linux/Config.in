@@ -1,4 +1,4 @@
-config BR2_PACKAGE_UTIL_LINUX
+menuconfig BR2_PACKAGE_UTIL_LINUX
 	bool "util-linux"
 	depends on BR2_USE_WCHAR
 	select BR2_PACKAGE_GETTEXT if BR2_NEEDS_GETTEXT_IF_LOCALE
@@ -90,6 +90,11 @@ config BR2_PACKAGE_UTIL_LINUX_FDFORMAT
 	bool "fdformat"
 	help
 	  Low-level format a floppy disk
+
+config BR2_PACKAGE_UTIL_LINUX_FINDFS
+	bool "findfs"
+	help
+	  Find a filesystem by label or UUID
 
 config BR2_PACKAGE_UTIL_LINUX_FSCK
 	bool "fsck"
@@ -211,7 +216,7 @@ config BR2_PACKAGE_UTIL_LINUX_SCHEDUTILS
 
 config BR2_PACKAGE_UTIL_LINUX_SETPRIV
 	bool "setpriv"
-	depends on !BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_NIOSII201405 # libcap-ng
+	depends on !BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_NIOSII # libcap-ng
 	select BR2_PACKAGE_LIBCAP_NG
 	help
 	  Run a program with different Linux privilege settings

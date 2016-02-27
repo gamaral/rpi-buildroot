@@ -11,7 +11,7 @@ Note that the default Buildroot configuration is prepared to boot from
 an SD card: the first stage bootloader, second stage bootloader,
 kernel image and root filesystem are all located on the SD card. Some
 adjustments in the bootloader configuration will be needed to boot
-from NAND flash, see board/atmel/nandflash.txt
+from NAND flash, see board/atmel/readme.txt
 
 Configuring and building Buildroot
 ----------------------------------
@@ -52,7 +52,7 @@ sudo mount /dev/mmcblk0p2 /media/rootfs
 Copy the bootloaders, kernel image and Device Tree blob to the first
 partition:
 
-cp output/images/uboot-spl.bin /media/boot/boot.bin
+cp output/images/u-boot-spl.bin /media/boot/boot.bin
 cp output/images/u-boot.img /media/boot/u-boot.img
 cp output/images/zImage /media/boot/zImage
 cp output/images/at91-sama5d3_xplained.dtb /media/boot/at91-sama5d3_xplained.dtb
