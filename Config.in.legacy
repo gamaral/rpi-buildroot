@@ -143,6 +143,176 @@ comment "----------------------------------------------------"
 endif
 
 ###############################################################################
+comment "Legacy options removed in 2016.05"
+
+config BR2_PACKAGE_OPENVPN_CRYPTO_POLARSSL
+	bool "openvpn polarssl crypto backend removed"
+	select BR2_LEGACY
+	help
+	  The OpenVPN polarssl crypto backend option has been removed.
+	  Version from 2.3.10 onwards need polarssl >= 1.3.8 but aren't
+	  compatible with mbedtls (polarssl) series 2.x which is the
+	  version provided in buildroot. And both can't coexist.
+	  It now uses OpenSSL as the only option.
+
+
+config BR2_PACKAGE_NGINX_HTTP_SPDY_MODULE
+	bool "nginx http spdy module removed"
+	select BR2_LEGACY
+	select BR2_PACKAGE_NGINX_HTTP_V2_MODULE
+	help
+	  The ngx_http_spdy_module has been superseded by the
+	  ngx_http_v2_module since nginx v1.9.5.  The
+	  ngx_http_v2_module modules has been automatically selected
+	  in your configuration.
+
+config BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_RTP
+	bool "gst1-plugins-bad rtp plugin moved to good"
+	select BR2_LEGACY
+	help
+	  The rtp plugin has been moved from gst1-plugins-base to
+	  gst1-plugins-good.
+
+config BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_MPG123
+	bool "gst1-plugins-bad mpg123 plugin moved to ugly"
+	select BR2_LEGACY
+	help
+	  The mpg123 plugin has been moved from gst1-plugins-bad to
+	  gst1-plugins-ugly.
+
+config BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_POWERPC
+	bool "PowerPC Sourcery toolchain has been removed"
+	select BR2_LEGACY
+	help
+	  The Sourcery CodeBench toolchain for the PowerPC
+	  architecture has been removed, as it was very old, not
+	  maintained, and causing numerous build failures with modern
+	  userspace packages.
+
+config BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_POWERPC_E500V2
+	bool "PowerPC Sourcery E500v2 toolchain has been removed"
+	select BR2_LEGACY
+	help
+	  The Sourcery CodeBench toolchain for the PowerPC E500v2
+	  architecture has been removed, as it was very old, not
+	  maintained, and causing numerous build failures with modern
+	  userspace packages.
+
+config BR2_x86_i386
+	bool "x86 i386 support removed"
+	select BR2_LEGACY
+	help
+	  The support for the i386 processors of the x86 architecture
+	  has been removed.
+
+config BR2_PACKAGE_QT5WEBKIT_EXAMPLES
+	bool "qt5webkit-examples package removed"
+	select BR2_LEGACY
+	help
+	  The qt5webkit-examples package has been removed, since it
+	  was removed from upstream starting from Qt 5.6.
+
+config BR2_PACKAGE_QT5QUICK1
+	bool "qt5quick1 package removed"
+	select BR2_LEGACY
+	help
+	  The qt5quick1 package has been removed, since it was removed
+	  from upstream starting from Qt 5.6.
+
+config BR2_TARGET_UBOOT_CUSTOM_PATCH_DIR
+	bool "uboot custom patch dir removed"
+	select BR2_LEGACY
+	help
+	  The uboot custom patch directory option has been removed. Use
+	  the improved BR2_TARGET_UBOOT_PATCH option instead.
+
+config BR2_PACKAGE_XDRIVER_XF86_INPUT_VOID
+	bool "xf86-input-void removed"
+	select BR2_LEGACY
+	help
+	  The xf86-input-void package has been removed, there's no need
+	  for it in any modern (post-2007) xorg server.
+
+config BR2_KERNEL_HEADERS_3_17
+	bool "kernel headers version 3.17.x are no longer supported"
+	select BR2_KERNEL_HEADERS_3_18
+	select BR2_LEGACY
+	help
+	  Version 3.17.x of the Linux kernel headers have been deprecated
+	  for more than four buildroot releases and are now removed.
+	  As an alternative, version 3.18.x of the headers have been
+	  automatically selected in your configuration.
+
+config BR2_GDB_VERSION_7_7
+	bool "gdb 7.7 has been removed"
+	select BR2_LEGACY
+	help
+	  The 7.7 version of gdb has been removed. Use a newer version
+	  instead.
+
+config BR2_PACKAGE_FOOMATIC_FILTERS
+	bool "foomatic-filters"
+	select BR2_LEGACY
+	help
+	  The foomatic-filters package was removed.
+
+config BR2_PACKAGE_SAMBA
+	bool "samba"
+	select BR2_LEGACY
+	help
+	  The samba package was removed in favour of samba4 since the
+	  3.x series isn't supported by upstream any longer.
+
+config BR2_PACKAGE_KODI_WAVPACK
+	bool "wavpack"
+	select BR2_LEGACY
+	help
+	  wavpack support was removed in favour of ffmpeg:
+	  https://github.com/xbmc/xbmc/commit/7916902c9e6f7a523265594f3ad7f921f93f1cd4
+
+config BR2_PACKAGE_KODI_RSXS
+	bool "rsxs support in Kodi was moved to an addon"
+	select BR2_LEGACY
+	select BR2_PACKAGE_KODI_SCREENSAVER_RSXS
+	help
+	  rsxs support in Kodi was moved to an addon
+
+config BR2_PACKAGE_KODI_GOOM
+	bool "Goom support in Kodi was moved to an addon"
+	select BR2_LEGACY
+	select BR2_PACKAGE_KODI_VISUALISATION_GOOM
+	help
+	  Goom support in Kodi was moved to an addon
+
+config BR2_PACKAGE_SYSTEMD_ALL_EXTRAS
+	bool "systemd all extras option has been removed"
+	select BR2_LEGACY
+	select BR2_PACKAGE_XZ
+	select BR2_PACKAGE_LIBGCRYPT
+	help
+	  The systemd option to enable "all extras" has been
+	  removed. To get the same features, the libgcrypt and xz
+	  package should now be enabled.
+
+config BR2_GCC_VERSION_4_5_X
+	bool "gcc 4.5.x has been removed"
+	select BR2_LEGACY
+	help
+	  The 4.5.x version of gcc has been removed. Use a newer
+	  version instead.
+
+config BR2_PACKAGE_SQLITE_READLINE
+	bool "command-line editing support was updated"
+	select BR2_PACKAGE_NCURSES
+	select BR2_PACKAGE_READLINE
+	select BR2_LEGACY
+	help
+	  This option was removed in favour of the sqlite package
+	  deciding itself depending on the enabled packages whether
+	  command-line editing should be enabled, it also also takes
+	  libedit into account.
+
+###############################################################################
 comment "Legacy options removed in 2016.02"
 
 config BR2_PACKAGE_DOVECOT_BZIP2
