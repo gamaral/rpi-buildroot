@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-RPI_FIRMWARE_VERSION = 1.20160309
+RPI_FIRMWARE_VERSION = 70143fe9d371cd6486a80d6765e93b5574212b64
 RPI_FIRMWARE_SITE = $(call github,raspberrypi,firmware,$(RPI_FIRMWARE_VERSION))
 RPI_FIRMWARE_LICENSE = BSD-3c
 RPI_FIRMWARE_LICENSE_FILES = boot/LICENCE.broadcom
@@ -48,7 +48,6 @@ endef
 # We have no host sources to get, since we already
 # bundle the script we want to install.
 HOST_RPI_FIRMWARE_SOURCE =
-HOST_RPI_FIRMWARE_DEPENDENCIES =
 
 define HOST_RPI_FIRMWARE_INSTALL_CMDS
 	$(INSTALL) -D -m 0755 package/rpi-firmware/mkknlimg $(HOST_DIR)/usr/bin/mkknlimg

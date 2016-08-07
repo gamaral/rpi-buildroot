@@ -265,7 +265,7 @@ config BR2_PACKAGE_QT_SYSTEMJPEG
 config BR2_PACKAGE_QT_QTJPEG
 	bool "Use Qt bundled libjpeg"
 	help
-	  Link against libjpeg proveded with Qt
+	  Link against libjpeg provided with Qt
 endchoice
 
 choice
@@ -301,6 +301,11 @@ config BR2_PACKAGE_QT_SYSTEMTIFF
 config BR2_PACKAGE_QT_QTTIFF
 	bool "Use Qt bundled libtiff"
 endchoice
+
+config BR2_PACKAGE_QT_ACCESSIBILITY
+	bool "Enable accessibility support"
+	help
+	  This enables and compiles the accessibility support.
 
 endif # BR2_PACKAGE_QT_GUI_MODULE
 
@@ -350,12 +355,41 @@ config BR2_PACKAGE_QT_PHONON_BACKEND
 	  Build the platform Phonon plugin.
 	  If unsure, say n.
 
+config BR2_PACKAGE_QT_OPENGL
+	bool "OpenGL support"
+	depends on (BR2_PACKAGE_HAS_LIBGL && BR2_PACKAGE_QT_X11) || \
+		   (BR2_PACKAGE_HAS_LIBEGL && BR2_PACKAGE_HAS_LIBGLES)
+	default y
+	help
+	  This option enables OpenGL support.
+
+if BR2_PACKAGE_QT_OPENGL
+
+choice
+	prompt "OpenGL API"
+	help
+	  Select OpenGL API.
+
+comment "Desktop OpenGL not available (needs Qt standard (X11))"
+	depends on !BR2_PACKAGE_QT_X11
+
+config BR2_PACKAGE_QT_OPENGL_GL_DESKTOP
+	bool "Desktop OpenGL"
+	depends on BR2_PACKAGE_HAS_LIBGL
+	depends on BR2_PACKAGE_QT_X11
+	help
+	  Use desktop OpenGL.
+
 config BR2_PACKAGE_QT_OPENGL_ES
 	bool "OpenGL ES v2.x support"
 	depends on BR2_PACKAGE_HAS_LIBGLES
 	depends on BR2_PACKAGE_HAS_LIBEGL
 	help
 	  Enable the OpenGL ES v2.x support.
+
+endchoice
+
+endif # BR2_PACKAGE_QT_OPENGL
 
 endif
 

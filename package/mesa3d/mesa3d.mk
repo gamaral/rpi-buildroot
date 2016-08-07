@@ -5,7 +5,7 @@
 ################################################################################
 
 # When updating the version, please also update mesa3d-headers
-MESA3D_VERSION = 11.2.2
+MESA3D_VERSION = 12.0.1
 MESA3D_SOURCE = mesa-$(MESA3D_VERSION).tar.xz
 MESA3D_SITE = ftp://ftp.freedesktop.org/pub/mesa/$(MESA3D_VERSION)
 MESA3D_LICENSE = MIT, SGI, Khronos
@@ -36,9 +36,12 @@ MESA3D_CONF_OPTS += --with-sha1=libcrypto
 else ifeq ($(BR2_PACKAGE_LIBGCRYPT),y)
 MESA3D_DEPENDENCIES += libgcrypt
 MESA3D_CONF_OPTS += --with-sha1=libgcrypt
+else ifeq ($(BR2_PACKAGE_LIBSHA1),y)
+MESA3D_DEPENDENCIES += libsha1
+MESA3D_CONF_OPTS += --with-sha1=libsha1
 endif
 
-ifeq ($(BR2_PACKAGE_HAS_LIBUDEV),y)
+ifeq ($(BR2_PACKAGE_HAS_UDEV),y)
 MESA3D_DEPENDENCIES += udev
 MESA3D_CONF_OPTS += --disable-sysfs
 else
@@ -93,16 +96,9 @@ MESA3D_CONF_OPTS += \
 	--with-gallium-drivers=$(subst $(space),$(comma),$(MESA3D_GALLIUM_DRIVERS-y))
 endif
 
-define MESA3D_REMOVE_OPENGL_PC
-	rm -f $(STAGING_DIR)/usr/lib/pkgconfig/dri.pc
-	rm -f $(STAGING_DIR)/usr/lib/pkgconfig/gl.pc
-	rm -rf $(STAGING_DIR)/usr/include/GL/
-endef
-
 ifeq ($(BR2_PACKAGE_MESA3D_DRI_DRIVER),)
 MESA3D_CONF_OPTS += \
 	--without-dri-drivers --disable-dri3
-MESA3D_POST_INSTALL_STAGING_HOOKS += MESA3D_REMOVE_OPENGL_PC
 else
 ifeq ($(BR2_PACKAGE_XPROTO_DRI3PROTO),y)
 MESA3D_DEPENDENCIES += xlib_libxshmfence xproto_dri3proto xproto_presentproto
@@ -116,8 +112,6 @@ endif
 # libGL is only provided for a full xorg stack
 ifeq ($(BR2_PACKAGE_XORG7),y)
 MESA3D_PROVIDES += libgl
-else
-MESA3D_POST_INSTALL_STAGING_HOOKS += MESA3D_REMOVE_OPENGL_PC
 endif
 MESA3D_CONF_OPTS += \
 	--enable-shared-glapi \
@@ -135,8 +129,6 @@ endif
 
 # Always enable OpenGL:
 #   - it is needed for GLES (mesa3d's ./configure is a bit weird)
-#   - but if no DRI driver is enabled, then libgl is not built,
-#     remove dri.pc and gl.pc in this case (MESA3D_REMOVE_OPENGL_PC)
 MESA3D_CONF_OPTS += --enable-opengl --enable-dri
 
 # libva and mesa3d have a circular dependency
@@ -146,6 +138,8 @@ MESA3D_CONF_OPTS += --disable-va
 ifeq ($(BR2_PACKAGE_MESA3D_OPENGL_EGL),y)
 MESA3D_PROVIDES += libegl
 ifeq ($(BR2_PACKAGE_MESA3D_DRI_DRIVER),y)
+MESA3D_EGL_PLATFORMS = drm
+else ifeq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VC4),y)
 MESA3D_EGL_PLATFORMS = drm
 else ifeq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VIRGL),y)
 MESA3D_EGL_PLATFORMS = drm

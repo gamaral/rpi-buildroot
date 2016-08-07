@@ -5,7 +5,7 @@
 ################################################################################
 
 NTP_VERSION_MAJOR = 4.2
-NTP_VERSION = $(NTP_VERSION_MAJOR).8p7
+NTP_VERSION = $(NTP_VERSION_MAJOR).8p8
 NTP_SITE = http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-$(NTP_VERSION_MAJOR)
 NTP_DEPENDENCIES = host-pkgconf libevent $(if $(BR2_PACKAGE_BUSYBOX),busybox)
 NTP_LICENSE = ntp license
@@ -40,6 +40,12 @@ NTP_CONF_OPTS += --enable-ATOM
 NTP_DEPENDENCIES += pps-tools
 else
 NTP_CONF_OPTS += --disable-ATOM
+endif
+
+ifeq ($(BR2_PACKAGE_NTP_NTP_SHM_CLK),y)
+NTP_CONF_OPTS += --enable-SHM
+else
+NTP_CONF_OPTS += --disable-SHM
 endif
 
 NTP_INSTALL_FILES_$(BR2_PACKAGE_NTP_NTP_KEYGEN) += util/ntp-keygen

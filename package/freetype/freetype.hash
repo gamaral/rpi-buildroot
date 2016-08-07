@@ -1,3 +1,2 @@
-# From http://sourceforge.net/projects/freetype/files/freetype2/2.6.3/
-md5	0037b25a8c090bc8a1218e867b32beb1	freetype-2.6.3.tar.bz2
-sha1	6c98bd5d0be313207c37ca23d25faf983486aee5	freetype-2.6.3.tar.bz2
+# Locally calculated after checking pgp signature
+sha256	e20a6e1400798fd5e3d831dd821b61c35b1f9a6465d6b18a53a9df4cf441acf0	freetype-2.6.5.tar.bz2

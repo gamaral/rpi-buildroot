@@ -258,6 +258,12 @@ else
 QT_CONFIGURE_OPTS += -no-libmng
 endif
 
+ifeq ($(BR2_PACKAGE_QT_ACCESSIBILITY),y)
+QT_CONFIGURE_OPTS += -accessibility
+else
+QT_CONFIGURE_OPTS += -no-accessibility
+endif
+
 ifeq ($(BR2_PACKAGE_QT_QTZLIB),y)
 QT_CONFIGURE_OPTS += -qt-zlib
 else
@@ -336,6 +342,9 @@ QT_DEPENDENCIES += libgles libegl
 QT_CFLAGS += `$(PKG_CONFIG_HOST_BINARY) --cflags egl`
 QT_CXXFLAGS += `$(PKG_CONFIG_HOST_BINARY) --cflags egl`
 QT_LDFLAGS += `$(PKG_CONFIG_HOST_BINARY) --libs egl`
+else ifeq ($(BR2_PACKAGE_QT_OPENGL_GL_DESKTOP),y)
+QT_CONFIGURE_OPTS += -opengl desktop
+QT_DEPENDENCIES += libgl
 else
 QT_CONFIGURE_OPTS += -no-opengl
 endif
@@ -517,7 +526,6 @@ define QT_CONFIGURE_CMDS
 		-no-xinerama \
 		-no-cups \
 		-no-nis \
-		-no-accessibility \
 		-no-separate-debug-info \
 		-prefix /usr \
 		-plugindir /usr/lib/qt/plugins \
