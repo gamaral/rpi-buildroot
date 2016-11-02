@@ -9,7 +9,7 @@
 BINUTILS_VERSION = $(call qstrip,$(BR2_BINUTILS_VERSION))
 ifeq ($(BINUTILS_VERSION),)
 ifeq ($(BR2_arc),y)
-BINUTILS_VERSION = arc-2016.09-eng008
+BINUTILS_VERSION = arc-2016.09-eng010
 else
 BINUTILS_VERSION = 2.25.1
 endif
@@ -58,6 +58,7 @@ BINUTILS_CONF_OPTS = \
 	--host=$(GNU_TARGET_NAME) \
 	--target=$(GNU_TARGET_NAME) \
 	--enable-install-libiberty \
+	--enable-build-warnings=no \
 	$(BINUTILS_DISABLE_GDB_CONF_OPTS) \
 	$(BINUTILS_EXTRA_CONFIG_OPTIONS)
 
@@ -69,6 +70,12 @@ endif
 # and sometimes needs specific makeinfo versions to work
 BINUTILS_CONF_ENV += ac_cv_prog_MAKEINFO=missing
 HOST_BINUTILS_CONF_ENV += ac_cv_prog_MAKEINFO=missing
+
+# gcc bug with Os/O2/O3, PR77311
+# error: unable to find a register to spill in class 'CCREGS'
+ifeq ($(BR2_bfin),y)
+BINUTILS_CONF_ENV += CFLAGS="$(TARGET_CFLAGS) -O1"
+endif
 
 # Install binutils after busybox to prefer full-blown utilities
 ifeq ($(BR2_PACKAGE_BUSYBOX),y)
