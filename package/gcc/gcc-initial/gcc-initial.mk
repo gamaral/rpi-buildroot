@@ -29,7 +29,7 @@ HOST_GCC_INITIAL_PRE_CONFIGURE_HOOKS += HOST_GCC_CONFIGURE_SYMLINK
 # available (--with-newlib is passed, and therefore inhibit_libc is
 # defined), it tries to use the C library for the libgmon
 # library. Since it's not needed in gcc-initial, we disabled it here.
-ifeq ($(BR2_GCC_VERSION_4_8_ARC),y)
+ifeq ($(BR2_GCC_VERSION_ARC),y)
 define HOST_GCC_INITIAL_DISABLE_LIBGMON
 	$(SED) 's/crtbeginS.o libgmon.a crtg.o/crtbeginS.o crtg.o/' \
 		$(@D)/libgcc/config.host
@@ -61,7 +61,8 @@ HOST_GCC_INITIAL_INSTALL_OPTS += install-target-libgcc
 endif
 
 HOST_GCC_INITIAL_TOOLCHAIN_WRAPPER_ARGS += $(HOST_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS)
-HOST_GCC_INITIAL_POST_BUILD_HOOKS += TOOLCHAIN_BUILD_WRAPPER
+HOST_GCC_INITIAL_POST_BUILD_HOOKS += TOOLCHAIN_WRAPPER_BUILD
+HOST_GCC_INITIAL_POST_INSTALL_HOOKS += TOOLCHAIN_WRAPPER_INSTALL
 HOST_GCC_INITIAL_POST_INSTALL_HOOKS += HOST_GCC_INSTALL_WRAPPER_AND_SIMPLE_SYMLINKS
 
 $(eval $(host-autotools-package))

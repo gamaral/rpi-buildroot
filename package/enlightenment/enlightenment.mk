@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-ENLIGHTENMENT_VERSION = 0.20.10
+ENLIGHTENMENT_VERSION = 0.21.3
 ENLIGHTENMENT_SOURCE = enlightenment-$(ENLIGHTENMENT_VERSION).tar.xz
 ENLIGHTENMENT_SITE = http://download.enlightenment.org/rel/apps/enlightenment
 ENLIGHTENMENT_LICENSE = BSD-2c
@@ -14,13 +14,12 @@ ENLIGHTENMENT_DEPENDENCIES = \
 	host-pkgconf \
 	host-efl \
 	efl \
-	elementary \
-	libevas-generic-loaders \
 	xcb-util-keysyms
 
 ENLIGHTENMENT_CONF_OPTS = \
 	--with-edje-cc=$(HOST_DIR)/usr/bin/edje_cc \
 	--with-eet-eet=$(HOST_DIR)/usr/bin/eet \
+	--with-eldbus_codegen=$(HOST_DIR)/usr/bin/eldbus-codegen \
 	--disable-pam \
 	--disable-rpath
 

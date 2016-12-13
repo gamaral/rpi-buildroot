@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-QEMU_VERSION = 2.6.0
+QEMU_VERSION = 2.7.0
 QEMU_SOURCE = qemu-$(QEMU_VERSION).tar.bz2
 QEMU_SITE = http://wiki.qemu.org/download
 QEMU_LICENSE = GPLv2, LGPLv2.1, MIT, BSD-3c, BSD-2c, Others/BSD-1c
@@ -34,6 +34,8 @@ HOST_QEMU_DEPENDENCIES = host-pkgconf host-python host-zlib host-libglib2 host-p
 #       mips64          mips64
 #       mips64el        mips64el
 #       powerpc         ppc
+#       powerpc64       ppc64
+#       powerpc64le     ppc64le
 #       sh2a            not supported
 #       sh4             sh4
 #       sh4eb           sh4eb
@@ -54,6 +56,12 @@ HOST_QEMU_ARCH = i386
 endif
 ifeq ($(HOST_QEMU_ARCH),powerpc)
 HOST_QEMU_ARCH = ppc
+endif
+ifeq ($(HOST_QEMU_ARCH),powerpc64)
+HOST_QEMU_ARCH = ppc64
+endif
+ifeq ($(HOST_QEMU_ARCH),powerpc64le)
+HOST_QEMU_ARCH = ppc64le
 endif
 ifeq ($(HOST_QEMU_ARCH),sh4a)
 HOST_QEMU_ARCH = sh4
@@ -110,16 +118,19 @@ HOST_QEMU_OPTS += --enable-vde
 HOST_QEMU_DEPENDENCIES += host-vde2
 endif
 
+# Override CPP, as it expects to be able to call it like it'd
+# call the compiler.
 define HOST_QEMU_CONFIGURE_CMDS
-	cd $(@D); $(HOST_CONFIGURE_OPTS) ./configure    \
-		--target-list="$(HOST_QEMU_TARGETS)"    \
-		--prefix="$(HOST_DIR)/usr"              \
-		--interp-prefix=$(STAGING_DIR)          \
-		--cc="$(HOSTCC)"                        \
-		--host-cc="$(HOSTCC)"                   \
-		--python=$(HOST_DIR)/usr/bin/python2    \
-		--extra-cflags="$(HOST_CFLAGS)"         \
-		--extra-ldflags="$(HOST_LDFLAGS)"       \
+	cd $(@D); $(HOST_CONFIGURE_OPTS) CPP="$(HOSTCC) -E" \
+		./configure \
+		--target-list="$(HOST_QEMU_TARGETS)" \
+		--prefix="$(HOST_DIR)/usr" \
+		--interp-prefix=$(STAGING_DIR) \
+		--cc="$(HOSTCC)" \
+		--host-cc="$(HOSTCC)" \
+		--python=$(HOST_DIR)/usr/bin/python2 \
+		--extra-cflags="$(HOST_CFLAGS)" \
+		--extra-ldflags="$(HOST_LDFLAGS)" \
 		$(HOST_QEMU_OPTS)
 endef
 
@@ -193,11 +204,14 @@ else
 QEMU_OPTS += --disable-fdt
 endif
 
+# Override CPP, as it expects to be able to call it like it'd
+# call the compiler.
 define QEMU_CONFIGURE_CMDS
 	( cd $(@D);                                     \
 		LIBS='$(QEMU_LIBS)'                     \
 		$(TARGET_CONFIGURE_OPTS)                \
 		$(TARGET_CONFIGURE_ARGS)                \
+		CPP="$(TARGET_CC) -E"			\
 		$(QEMU_VARS)                            \
 		./configure                             \
 			--prefix=/usr                   \

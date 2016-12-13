@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBGLIB2_VERSION_MAJOR = 2.48
+LIBGLIB2_VERSION_MAJOR = 2.50
 LIBGLIB2_VERSION = $(LIBGLIB2_VERSION_MAJOR).1
 LIBGLIB2_SOURCE = glib-$(LIBGLIB2_VERSION).tar.xz
 LIBGLIB2_SITE = http://ftp.gnome.org/pub/gnome/sources/glib/$(LIBGLIB2_VERSION_MAJOR)
@@ -102,10 +102,15 @@ HOST_LIBGLIB2_CONF_OPTS = \
 
 LIBGLIB2_DEPENDENCIES = \
 	host-pkgconf host-libglib2 host-gettext \
-	libffi pcre zlib $(if $(BR2_NEEDS_GETTEXT),gettext)
+	libffi pcre util-linux zlib $(if $(BR2_NEEDS_GETTEXT),gettext)
 
 HOST_LIBGLIB2_DEPENDENCIES = \
-	host-gettext host-libffi host-pcre host-pkgconf host-zlib
+	host-gettext \
+	host-libffi \
+	host-pcre \
+	host-pkgconf \
+	host-util-linux \
+	host-zlib
 
 LIBGLIB2_CONF_OPTS = \
 	--with-pcre=system

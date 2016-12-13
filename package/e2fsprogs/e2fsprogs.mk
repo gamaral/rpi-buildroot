@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-E2FSPROGS_VERSION = 1.43.1
+E2FSPROGS_VERSION = 1.43.3
 E2FSPROGS_SOURCE = e2fsprogs-$(E2FSPROGS_VERSION).tar.xz
 E2FSPROGS_SITE = $(BR2_KERNEL_MIRROR)/linux/kernel/people/tytso/e2fsprogs/v$(E2FSPROGS_VERSION)
 E2FSPROGS_LICENSE = GPLv2, libuuid BSD-3c, libss and libet MIT-like with advertising clause
@@ -14,12 +14,6 @@ E2FSPROGS_INSTALL_STAGING_OPTS = DESTDIR=$(STAGING_DIR) install-libs
 E2FSPROGS_DEPENDENCIES = host-pkgconf util-linux
 # we don't have a host-util-linux
 HOST_E2FSPROGS_DEPENDENCIES = host-pkgconf
-
-# For 0002-fuse2fs-might-need-librt.patch
-# host-gettext for the gettext macro file needed at autoreconf time
-E2FSPROGS_AUTORECONF = YES
-E2FSPROGS_DEPENDENCIES += host-gettext
-HOST_E2FSPROGS_DEPENDENCIES += host-gettext
 
 # e4defrag doesn't build on older systems like RHEL5.x, and we don't
 # need it on the host anyway.
@@ -56,6 +50,12 @@ endif
 # saying that <sys/stat.h> is available on the host, which is needed
 # for util/subst.c to build properly.
 E2FSPROGS_CONF_ENV += BUILD_CFLAGS="-DHAVE_SYS_STAT_H"
+
+# Disable use of the host magic.h, as on older hosts (e.g. RHEL 5)
+# it doesn't provide definitions expected by e2fsprogs support lib.
+HOST_E2FSPROGS_CONF_ENV += \
+	ac_cv_header_magic_h=no \
+	ac_cv_lib_magic_magic_file=no
 
 ifeq ($(BR2_NEEDS_GETTEXT_IF_LOCALE),y)
 # util-linux libuuid pulls in libintl if needed, so ensure we also
