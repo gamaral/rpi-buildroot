@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-POPPLER_VERSION = 0.48.0
+POPPLER_VERSION = 0.51.0
 POPPLER_SOURCE = poppler-$(POPPLER_VERSION).tar.xz
 POPPLER_SITE = http://poppler.freedesktop.org
 POPPLER_DEPENDENCIES = fontconfig host-pkgconf
@@ -18,7 +18,7 @@ ifeq ($(BR2_PACKAGE_CAIRO),y)
 POPPLER_CONF_OPTS += --enable-cairo-output
 POPPLER_DEPENDENCIES += cairo
 else
-POPLER_CONF_OPTS += --disable-cairo-output
+POPPLER_CONF_OPTS += --disable-cairo-output
 endif
 
 ifeq ($(BR2_PACKAGE_LCMS2),y)
@@ -85,6 +85,17 @@ POPPLER_DEPENDENCIES += qt
 POPPLER_CONF_OPTS += --enable-poppler-qt4
 else
 POPPLER_CONF_OPTS += --disable-poppler-qt4
+endif
+
+ifeq ($(BR2_PACKAGE_POPPLER_QT5),y)
+POPPLER_DEPENDENCIES += qt5base
+POPPLER_CONF_OPTS += --enable-poppler-qt5
+# since Qt5.7.x c++11 is needed (LTS Qt5.6.x is the last one without this requirement)
+ifeq ($(BR2_PACKAGE_QT5_VERSION_LATEST),y)
+POPPLER_CONF_ENV += CXXFLAGS="$(TARGET_CXXFLAGS) -std=c++11"
+endif
+else
+POPPLER_CONF_OPTS += --disable-poppler-qt5
 endif
 
 ifeq ($(BR2_PACKAGE_OPENJPEG),y)

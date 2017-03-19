@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-EFL_VERSION = 1.18.2
+EFL_VERSION = 1.18.4
 EFL_SOURCE = efl-$(EFL_VERSION).tar.xz
 EFL_SITE = http://download.enlightenment.org/rel/libs/efl
 EFL_LICENSE = BSD-2c, LGPLv2.1+, GPLv2+
@@ -20,7 +20,7 @@ EFL_LICENSE_FILES = \
 EFL_INSTALL_STAGING = YES
 
 EFL_DEPENDENCIES = host-pkgconf host-efl host-luajit dbus freetype \
-	jpeg luajit udev util-linux zlib
+	jpeg luajit lz4 zlib
 
 # Configure options:
 # --disable-lua-old: build elua for the target.
@@ -28,6 +28,7 @@ EFL_DEPENDENCIES = host-pkgconf host-efl host-luajit dbus freetype \
 # --disable-sdl: disable sdl2 support.
 # --disable-spectre: disable spectre image loader.
 # --disable-xinput22: disable X11 XInput v2.2+ support.
+# --enable-liblz4: use liblz4 from lz4 package.
 # --with-doxygen: disable doxygen documentation
 EFL_CONF_OPTS = \
 	--with-edje-cc=$(HOST_DIR)/usr/bin/edje_cc \
@@ -43,6 +44,7 @@ EFL_CONF_OPTS = \
 	--disable-spectre \
 	--disable-xinput22 \
 	--disable-wayland \
+	--enable-liblz4 \
 	--with-doxygen=no
 
 # Disable untested configuration warning.
@@ -57,7 +59,14 @@ else
 EFL_CONF_OPTS += --disable-cxx-bindings
 endif
 
-ifeq ($(BR2_PACKAGE_UTIL_LINUX_LIBMOUNT),y)
+ifeq ($(BR2_PACKAGE_EFL_EEZE),y)
+EFL_DEPENDENCIES += udev
+EFL_CONF_OPTS += --enable-libeeze
+else
+EFL_CONF_OPTS += --disable-libeeze
+endif
+
+ifeq ($(BR2_PACKAGE_EFL_UTIL_LINUX_LIBMOUNT),y)
 EFL_DEPENDENCIES += util-linux
 EFL_CONF_OPTS += --enable-libmount
 else
@@ -148,7 +157,7 @@ endif # BR2_PACKAGE_OPENSSL
 
 ifeq ($(BR2_PACKAGE_EFL_ELPUT),y)
 EFL_CONF_OPTS += --enable-elput
-EFL_DEPENDENCIES += libinput libxkbcommon
+EFL_DEPENDENCIES += libinput
 else
 EFL_CONF_OPTS += --disable-elput
 endif
@@ -191,6 +200,25 @@ EFL_DEPENDENCIES += libegl libgles
 else ifeq ($(BR2_PACKAGE_EFL_OPENGL_NONE),y)
 EFL_CONF_OPTS += --with-opengl=none
 endif
+
+ifeq ($(BR2_PACKAGE_EFL_DRM),y)
+EFL_CONF_OPTS += --enable-drm
+EFL_DEPENDENCIES += libdrm libegl mesa3d
+else
+EFL_CONF_OPTS += --disable-drm
+endif
+
+# The EFL Wayland support requires Evas GLES DRM engine support
+# which depends on wayland-client to build.
+# So enable gl_drm only when wayland support is selected.
+ifeq ($(BR2_PACKAGE_EFL_WAYLAND),y)
+EFL_DEPENDENCIES += wayland
+EFL_CONF_OPTS += --enable-wayland --enable-gl-drm
+else
+EFL_CONF_OPTS += --disable-wayland --disable-gl-drm
+endif
+
+EFL_DEPENDENCIES += $(if $(BR2_PACKAGE_LIBXKBCOMMON),libxkbcommon)
 
 # Loaders that need external dependencies needs to be --enable-XXX=yes
 # otherwise the default is '=static'.
@@ -249,6 +277,18 @@ EFL_DEPENDENCIES += librsvg cairo
 EFL_CONF_OPTS += --enable-librsvg
 else
 EFL_CONF_OPTS += --disable-librsvg
+endif
+
+ifeq ($(BR2_PACKAGE_UPOWER),)
+# upower ecore system module is only useful if upower
+# dbus service is available.
+# It's not essential, only used to notify applications
+# of power state, such as low battery or AC power, so
+# they can adapt their power consumption.
+define EFL_HOOK_REMOVE_UPOWER
+	rm -fr $(TARGET_DIR)/usr/lib/ecore/system/upower
+endef
+EFL_POST_INSTALL_TARGET_HOOKS = EFL_HOOK_REMOVE_UPOWER
 endif
 
 $(eval $(autotools-package))
@@ -330,5 +370,14 @@ HOST_EFL_CONF_OPTS += --enable-cxx-bindings
 else
 HOST_EFL_CONF_OPTS += --disable-cxx-bindings
 endif
+
+# Always disable upower system module from host as it's
+# not useful and would try to use the output/host/var
+# system bus which is non-existent and does not contain
+# any upower service in it.
+define HOST_EFL_HOOK_REMOVE_UPOWER
+	rm -fr $(HOST_DIR)/usr/lib/ecore/system/upower
+endef
+HOST_EFL_POST_INSTALL_HOOKS = HOST_EFL_HOOK_REMOVE_UPOWER
 
 $(eval $(host-autotools-package))

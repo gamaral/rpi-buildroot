@@ -84,6 +84,11 @@ config BR2_HOSTARCH_NEEDS_IA32_LIBS
 config BR2_HOSTARCH_NEEDS_IA32_COMPILER
 	bool
 
+# Hidden boolean selected by packages that need the host to have an
+# UTF8 locale.
+config BR2_NEEDS_HOST_UTF8_LOCALE
+	bool
+
 source "arch/Config.in"
 
 menu "Build options"
@@ -152,6 +157,13 @@ config BR2_XZCAT
 	help
 	  Command to be used to extract a xz'ed file to stdout.
 	  Default is "xzcat"
+
+config BR2_LZCAT
+	string "lzcat command"
+	default "lzip -d -c"
+	help
+	  Command to be used to extract a lzip'ed file to stdout.
+	  Default is "lzip -d -c"
 
 config BR2_TAR_OPTIONS
 	string "Tar options"
@@ -524,6 +536,8 @@ config BR2_GOOGLE_BREAKPAD_ENABLE
 	bool "Enable google-breakpad support"
 	select BR2_PACKAGE_GOOGLE_BREAKPAD
 	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_HOST_GCC_AT_LEAST_4_8 # C++11
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_4_8 # C++11
 	depends on BR2_USE_WCHAR
 	depends on BR2_TOOLCHAIN_HAS_THREADS
 	depends on (BR2_TOOLCHAIN_USES_GLIBC || BR2_TOOLCHAIN_USES_UCLIBC)
@@ -706,6 +720,12 @@ config BR2_REPRODUCIBLE
 	  from the build process. For a given Buildroot configuration,
 	  this allows to generate exactly identical binaries from one
 	  build to the other, including on different machines.
+
+	  The current implementation is restricted to builds with the
+	  same output directory. Many (absolute) paths are recorded in
+	  intermediary files, and it is very likely that some of these
+	  paths leak into the target rootfs. If you build with the
+	  same O=... path, however, the result is identical.
 
 	  This is labeled as an experimental feature, as not all
 	  packages behave properly to ensure reproducibility.

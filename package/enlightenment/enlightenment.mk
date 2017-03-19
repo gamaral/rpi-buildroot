@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-ENLIGHTENMENT_VERSION = 0.21.3
+ENLIGHTENMENT_VERSION = 0.21.5
 ENLIGHTENMENT_SOURCE = enlightenment-$(ENLIGHTENMENT_VERSION).tar.xz
 ENLIGHTENMENT_SITE = http://download.enlightenment.org/rel/apps/enlightenment
 ENLIGHTENMENT_LICENSE = BSD-2c
@@ -28,11 +28,6 @@ ENLIGHTENMENT_CONF_OPTS += --enable-systemd
 ENLIGHTENMENT_DEPENDENCIES += systemd
 else
 ENLIGHTENMENT_CONF_OPTS += --disable-systemd
-endif
-
-# uClibc has an old incomplete sys/ptrace.h for powerpc & sparc
-ifeq ($(BR2_TOOLCHAIN_USES_UCLIBC)$(BR2_powerpc)$(BR2_sparc),yy)
-ENLIGHTENMENT_CONF_ENV += ac_cv_header_sys_ptrace_h=no
 endif
 
 # alsa backend needs mixer support

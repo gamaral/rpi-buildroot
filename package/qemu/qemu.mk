@@ -35,7 +35,7 @@ HOST_QEMU_DEPENDENCIES = host-pkgconf host-python host-zlib host-libglib2 host-p
 #       mips64el        mips64el
 #       powerpc         ppc
 #       powerpc64       ppc64
-#       powerpc64le     ppc64le
+#       powerpc64le     ppc64 (system) / ppc64le (usermode)
 #       sh2a            not supported
 #       sh4             sh4
 #       sh4eb           sh4eb
@@ -62,6 +62,7 @@ HOST_QEMU_ARCH = ppc64
 endif
 ifeq ($(HOST_QEMU_ARCH),powerpc64le)
 HOST_QEMU_ARCH = ppc64le
+HOST_QEMU_SYS_ARCH = ppc64
 endif
 ifeq ($(HOST_QEMU_ARCH),sh4a)
 HOST_QEMU_ARCH = sh4
@@ -69,9 +70,10 @@ endif
 ifeq ($(HOST_QEMU_ARCH),sh4aeb)
 HOST_QEMU_ARCH = sh4eb
 endif
+HOST_QEMU_SYS_ARCH ?= $(HOST_QEMU_ARCH)
 
 ifeq ($(BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE),y)
-HOST_QEMU_TARGETS += $(HOST_QEMU_ARCH)-softmmu
+HOST_QEMU_TARGETS += $(HOST_QEMU_SYS_ARCH)-softmmu
 HOST_QEMU_OPTS += --enable-system --enable-fdt
 HOST_QEMU_DEPENDENCIES += host-dtc
 else
@@ -204,6 +206,12 @@ else
 QEMU_OPTS += --disable-fdt
 endif
 
+ifeq ($(BR2_PACKAGE_QEMU_TOOLS),y)
+QEMU_OPTS += --enable-tools
+else
+QEMU_OPTS += --disable-tools
+endif
+
 # Override CPP, as it expects to be able to call it like it'd
 # call the compiler.
 define QEMU_CONFIGURE_CMDS
@@ -242,7 +250,6 @@ define QEMU_CONFIGURE_CMDS
 			--disable-strip                 \
 			--disable-seccomp               \
 			--disable-sparse                \
-			--disable-tools                 \
 			$(QEMU_OPTS)                    \
 	)
 endef

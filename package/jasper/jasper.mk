@@ -4,22 +4,25 @@
 #
 ################################################################################
 
-JASPER_VERSION = version-1.900.31
-JASPER_SITE = $(call github,mdadams,jasper,$(JASPER_VERSION))
+JASPER_VERSION = 2.0.10
+JASPER_SITE = http://www.ece.uvic.ca/~frodo/jasper/software
 JASPER_INSTALL_STAGING = YES
-JASPER_DEPENDENCIES = jpeg
 JASPER_LICENSE = JasPer License Version 2.0
 JASPER_LICENSE_FILES = LICENSE
+JASPER_SUPPORTS_IN_SOURCE_BUILD = NO
+JASPER_CONF_OPTS = \
+	-DCMAKE_DISABLE_FIND_PACKAGE_DOXYGEN=TRUE \
+	-DCMAKE_DISABLE_FIND_PACKAGE_LATEX=TRUE
 
-# No configure script included. We need to generate it.
-JASPER_AUTORECONF = YES
-
-JASPER_CONF_OPTS = --disable-strict
-
-# Xtensa gcc is unable to generate correct code with -O0 enabled by
-# --enable-debug. Allow package build but disable debug.
-ifeq ($(BR2_xtensa)$(BR2_ENABLE_DEBUG),yy)
-JASPER_CONF_OPTS += --disable-debug
+ifeq ($(BR2_STATIC_LIBS),y)
+JASPER_CONF_OPTS += -DJAS_ENABLE_SHARED=OFF
 endif
 
-$(eval $(autotools-package))
+ifeq ($(BR2_PACKAGE_JPEG),y)
+JASPER_CONF_OPTS += -DJAS_ENABLE_LIBJPEG=ON
+JASPER_DEPENDENCIES += jpeg
+else
+JASPER_CONF_OPTS += -DJAS_ENABLE_LIBJPEG=OFF
+endif
+
+$(eval $(cmake-package))
