@@ -43,16 +43,14 @@ Building
 Deploying
 ---------
 
-### Script
+### Flash
 
-I've added a script that can automatically flash your sdcard, you simply need
-to point it to the correct device node, confirm and you're done!
+Flash output/images/sdcard.img onto an SD card with "dd" as root:
 
-**Notice** you will need to replace *sdx* in the following commands with the
+**Notice** you will need to replace *sdX* in the following commands with the
 actual device node for your sdcard.
 
-    # run the following as root (sudo)
-    board/raspberrypi/mksdcard /dev/sdx
+	dd if=output/images/sdcard.img of=/dev/sdX
 
 ### Manual
 
