@@ -50,7 +50,28 @@ Flash output/images/sdcard.img onto an SD card with "dd" as root:
 **Notice** you will need to replace *sdX* in the following commands with the
 actual device node for your sdcard.
 
+#### Automatic
+
+	board/raspberrypi/flashsdcard /dev/sdX
+
+This will resize the root partition to fill up the whole SD card.
+
+#### Manual
+
 	dd if=output/images/sdcard.img of=/dev/sdX
+
+Resize the partition (if needed)
+
+	parted /dev/sdX
+	> print         # prints partition table
+	> resizepart 2  # resize the root partition
+	> 100%          # make it fill up the whole SD card
+	> print         # prints partition table
+	> quit          # exit program
+
+Then resize the filesystem
+
+	resize2fs /dev/sdx2
 
 ### Manual
 
@@ -62,6 +83,7 @@ MB will do.
 actual device node for your sdcard.
 
 Create the partitions on the SD card. Run the following as root.
+
 **Notice** all data on the SD card will be lost.
 
 	fdisk /dev/sdx
