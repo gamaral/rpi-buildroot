@@ -4,14 +4,16 @@
 #
 ################################################################################
 
-LIBEPOXY_VERSION = v1.3.1
-LIBEPOXY_SITE = $(call github,anholt,libepoxy,$(LIBEPOXY_VERSION))
+LIBEPOXY_VERSION_MAJOR = 1.4
+LIBEPOXY_VERSION = $(LIBEPOXY_VERSION_MAJOR).1
+LIBEPOXY_SITE = http://ftp.gnome.org/pub/gnome/sources/libepoxy/$(LIBEPOXY_VERSION_MAJOR)
+LIBEPOXY_SOURCE = libepoxy-$(LIBEPOXY_VERSION).tar.xz
 LIBEPOXY_INSTALL_STAGING = YES
-# For patches 0001-0006:
-LIBEPOXY_AUTORECONF = YES
 LIBEPOXY_DEPENDENCIES = host-pkgconf xutil_util-macros
 LIBEPOXY_LICENSE = MIT
 LIBEPOXY_LICENSE_FILES = COPYING
+# 0002-Make-EGL-support-optional.patch
+LIBEPOXY_AUTORECONF = YES
 
 ifeq ($(BR2_PACKAGE_HAS_LIBEGL),y)
 LIBEPOXY_CONF_OPTS += --enable-egl

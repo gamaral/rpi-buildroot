@@ -7,7 +7,7 @@
 UBOOT_VERSION = $(call qstrip,$(BR2_TARGET_UBOOT_VERSION))
 UBOOT_BOARD_NAME = $(call qstrip,$(BR2_TARGET_UBOOT_BOARDNAME))
 
-UBOOT_LICENSE = GPLv2+
+UBOOT_LICENSE = GPL-2.0+
 UBOOT_LICENSE_FILES = Licenses/gpl-2.0.txt
 
 UBOOT_INSTALL_IMAGES = YES
@@ -72,6 +72,11 @@ endif
 ifeq ($(BR2_TARGET_UBOOT_FORMAT_DTB_IMG),y)
 UBOOT_BINS += u-boot-dtb.img
 UBOOT_MAKE_TARGET += u-boot-dtb.img
+endif
+
+ifeq ($(BR2_TARGET_UBOOT_FORMAT_DTB_BIN),y)
+UBOOT_BINS += u-boot-dtb.bin
+UBOOT_MAKE_TARGET += u-boot-dtb.bin
 endif
 
 ifeq ($(BR2_TARGET_UBOOT_FORMAT_IMG),y)
@@ -189,7 +194,12 @@ define UBOOT_HELP_CMDS
 endef
 endif # BR2_TARGET_UBOOT_BUILD_SYSTEM_LEGACY
 
+UBOOT_CUSTOM_DTS_PATH = $(call qstrip,$(BR2_TARGET_UBOOT_CUSTOM_DTS_PATH))
+
 define UBOOT_BUILD_CMDS
+	$(if $(UBOOT_CUSTOM_DTS_PATH),
+		cp -f $(UBOOT_CUSTOM_DTS_PATH) $(@D)/arch/$(UBOOT_ARCH)/dts/
+	)
 	$(TARGET_CONFIGURE_OPTS) 	\
 		$(MAKE) -C $(@D) $(UBOOT_MAKE_OPTS) 		\
 		$(UBOOT_MAKE_TARGET)
@@ -257,9 +267,17 @@ UBOOT_POST_INSTALL_IMAGES_HOOKS += UBOOT_GENERATE_ZYNQ_IMAGE
 endif
 
 ifeq ($(BR2_TARGET_UBOOT_ALTERA_SOCFPGA_IMAGE_CRC),y)
+ifeq ($(BR2_TARGET_UBOOT_SPL),y)
+UBOOT_CRC_ALTERA_SOCFPGA_INPUT_IMAGES = $(call qstrip,$(BR2_TARGET_UBOOT_SPL_NAME))
+UBOOT_CRC_ALTERA_SOCFPGA_HEADER_VERSION = 0
+else
+UBOOT_CRC_ALTERA_SOCFPGA_INPUT_IMAGES = u-boot-dtb.bin
+UBOOT_CRC_ALTERA_SOCFPGA_HEADER_VERSION = 1
+endif
 define UBOOT_CRC_ALTERA_SOCFPGA_IMAGE
-	$(foreach f,$(call qstrip,$(BR2_TARGET_UBOOT_SPL_NAME)), \
+	$(foreach f,$(UBOOT_CRC_ALTERA_SOCFPGA_INPUT_IMAGES), \
 		$(HOST_DIR)/usr/bin/mkpimage \
+			-v $(UBOOT_CRC_ALTERA_SOCFPGA_HEADER_VERSION) \
 			-o $(BINARIES_DIR)/$(notdir $(call qstrip,$(f))).crc \
 			$(@D)/$(call qstrip,$(f))
 	)
@@ -293,7 +311,7 @@ endif # UBOOT_BOARD_NAME
 else ifeq ($(BR2_TARGET_UBOOT_BUILD_SYSTEM_KCONFIG),y)
 ifeq ($(BR2_TARGET_UBOOT_USE_DEFCONFIG),y)
 ifeq ($(call qstrip,$(BR2_TARGET_UBOOT_BOARD_DEFCONFIG)),)
-$(error No board defconfig name specified, check your BR2_TARGET_UBOOT_DEFCONFIG setting)
+$(error No board defconfig name specified, check your BR2_TARGET_UBOOT_BOARD_DEFCONFIG setting)
 endif # qstrip BR2_TARGET_UBOOT_BOARD_DEFCONFIG
 endif # BR2_TARGET_UBOOT_USE_DEFCONFIG
 ifeq ($(BR2_TARGET_UBOOT_USE_CUSTOM_CONFIG),y)

@@ -4,10 +4,10 @@
 #
 ################################################################################
 
-WIRINGPI_VERSION = 2.32
+WIRINGPI_VERSION = 2.44
 WIRINGPI_SITE = git://git.drogon.net/wiringPi
 
-WIRINGPI_LICENSE = LGPLv3+
+WIRINGPI_LICENSE = LGPL-3.0+
 WIRINGPI_LICENSE_FILES = COPYING.LESSER
 WIRINGPI_INSTALL_STAGING = YES
 

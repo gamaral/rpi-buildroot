@@ -1,13 +1,6 @@
 ################################################################################
 #
-# Qt Embedded for Linux
-#
-# This makefile was originally composed by Thomas Lundquist <thomasez@zelow.no>
-# Later heavily modified by buildroot developers
-#
-# BTW, this uses alot of FPU calls and it's pretty slow if you use
-# the kernels FPU emulation so it's better to choose soft float in the
-# buildroot config (and uClibc.config of course, if you have your own.)
+# qt
 #
 ################################################################################
 
@@ -21,15 +14,11 @@ QT_PATCH = https://github.com/qtproject/qtbase/commit/b8f98d956501dfa4ce03a137f1
 QT_DEPENDENCIES = host-pkgconf
 QT_INSTALL_STAGING = YES
 
-QT_LICENSE := LGPLv2.1 with exceptions or GPLv3
-ifneq ($(BR2_PACKAGE_QT_LICENSE_APPROVED),y)
-QT_LICENSE := $(QT_LICENSE) or Digia Qt Commercial license
-endif
+QT_LICENSE := LGPL-2.1 with exceptions or GPL-3.0
 QT_LICENSE_FILES = LICENSE.LGPL LGPL_EXCEPTION.txt LICENSE.GPL3
 
-ifeq ($(BR2_PACKAGE_QT_LICENSE_APPROVED),y)
+# Opensource licenses are the only one we catter about
 QT_CONFIGURE_OPTS += -opensource -confirm-license
-endif
 
 QT_CONFIG_FILE = $(call qstrip,$(BR2_PACKAGE_QT_CONFIG_FILE))
 
@@ -78,7 +67,6 @@ QT_DEPENDENCIES += libglib2
 else
 QT_CONFIGURE_OPTS += -no-glib
 endif
-
 
 ### Pixel depths
 QT_PIXEL_DEPTHS = # empty
@@ -359,9 +347,6 @@ endif
 
 # Qt SQL Drivers
 ifeq ($(BR2_PACKAGE_QT_SQL_MODULE),y)
-ifeq ($(BR2_PACKAGE_QT_IBASE),y)
-QT_CONFIGURE_OPTS += -qt-sql-ibase
-endif
 ifeq ($(BR2_PACKAGE_QT_MYSQL),y)
 QT_CONFIGURE_OPTS += -qt-sql-mysql -mysql_config $(STAGING_DIR)/usr/bin/mysql_config
 QT_DEPENDENCIES += mysql
@@ -550,7 +535,6 @@ define QT_BUILD_CMDS
 	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)
 endef
 
-
 # Build the list of libraries and plugins to install to the target
 
 QT_INSTALL_LIBS += QtCore
@@ -692,7 +676,7 @@ QT_LICENSE_FILES += src/3rdparty/fonts/COPYRIGHT.Unifont
 endif
 endif # QT_FONTS
 
-ifeq ($(BR2_PACKAGE_QT_QTFREETYPE)$(BR2_PACKAGE_QT_SYSTEMFREETYPE),y)
+ifeq ($(BR2_PACKAGE_QT_FONT_TRUETYPE),y)
 define QT_INSTALL_TARGET_FONTS_TTF
 	mkdir -p $(TARGET_DIR)/usr/lib/fonts
 	cp -dpf $(STAGING_DIR)/usr/lib/fonts/*.ttf $(TARGET_DIR)/usr/lib/fonts

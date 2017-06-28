@@ -9,14 +9,7 @@ GST1_PLUGINS_BASE_SOURCE = gst-plugins-base-$(GST1_PLUGINS_BASE_VERSION).tar.xz
 GST1_PLUGINS_BASE_SITE = https://gstreamer.freedesktop.org/src/gst-plugins-base
 GST1_PLUGINS_BASE_INSTALL_STAGING = YES
 GST1_PLUGINS_BASE_LICENSE_FILES = COPYING.LIB
-GST1_PLUGINS_BASE_LICENSE = LGPLv2+, LGPLv2.1+
-
-# freetype is only used by examples, but if it is not found
-# and the host has a freetype-config script, then the host
-# include dirs are added to the search path causing trouble
-GST1_PLUGINS_BASE_CONF_ENV =
-	FT2_CONFIG=/bin/false \
-	ac_cv_header_stdint_t="stdint.h"
+GST1_PLUGINS_BASE_LICENSE = LGPL-2.0+, LGPL-2.1+
 
 # gio_unix_2_0 is only used for tests
 GST1_PLUGINS_BASE_CONF_OPTS = \

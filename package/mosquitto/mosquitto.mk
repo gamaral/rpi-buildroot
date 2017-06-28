@@ -4,9 +4,9 @@
 #
 ################################################################################
 
-MOSQUITTO_VERSION = 1.4.10
+MOSQUITTO_VERSION = 1.4.12
 MOSQUITTO_SITE = http://mosquitto.org/files/source
-MOSQUITTO_LICENSE = EPLv1.0 or EDLv1.0
+MOSQUITTO_LICENSE = EPL-1.0 or EDLv1.0
 MOSQUITTO_LICENSE_FILES = LICENSE.txt epl-v10 edl-v10
 MOSQUITTO_INSTALL_STAGING = YES
 
@@ -16,6 +16,13 @@ MOSQUITTO_MAKE_OPTS = \
 	prefix=/usr \
 	WITH_WRAP=no \
 	WITH_DOCS=no
+
+# adns uses getaddrinfo_a
+ifeq ($(BR2_TOOLCHAIN_USES_GLIBC),y)
+MOSQUITTO_MAKE_OPTS += WITH_ADNS=yes
+else
+MOSQUITTO_MAKE_OPTS += WITH_ADNS=no
+endif
 
 ifeq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
 MOSQUITTO_MAKE_OPTS += WITH_THREADING=yes

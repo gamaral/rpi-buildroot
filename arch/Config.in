@@ -85,6 +85,14 @@ config BR2_bfin
 	  http://www.analog.com/
 	  http://en.wikipedia.org/wiki/Blackfin
 
+config BR2_csky
+	bool "csky"
+	select BR2_ARCH_HAS_MMU_MANDATORY
+	help
+	  csky is processor IP from china.
+	  http://www.c-sky.com/
+	  http://www.github.com/c-sky
+
 config BR2_i386
 	bool "i386"
 	select BR2_ARCH_HAS_MMU_MANDATORY
@@ -284,6 +292,12 @@ config BR2_GCC_TARGET_MODE
 config BR2_BINFMT_SUPPORTS_SHARED
 	bool
 
+# Must match the name of the architecture from readelf point of view,
+# i.e the "Machine:" field of readelf output. See get_machine_name()
+# in binutils/readelf.c for the list of possible values.
+config BR2_READELF_ARCH_NAME
+	string
+
 # Set up target binary format
 choice
 	prompt "Target Binary Format"
@@ -367,6 +381,10 @@ endif
 
 if BR2_bfin
 source "arch/Config.in.bfin"
+endif
+
+if BR2_csky
+source "arch/Config.in.csky"
 endif
 
 if BR2_m68k

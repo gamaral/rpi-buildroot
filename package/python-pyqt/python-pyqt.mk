@@ -7,7 +7,7 @@
 PYTHON_PYQT_VERSION = 4.11.3
 PYTHON_PYQT_SOURCE = PyQt-x11-gpl-$(PYTHON_PYQT_VERSION).tar.gz
 PYTHON_PYQT_SITE = http://downloads.sourceforge.net/project/pyqt/PyQt4/PyQt-$(PYTHON_PYQT_VERSION)
-PYTHON_PYQT_LICENSE = GPLv2 or GPLv3
+PYTHON_PYQT_LICENSE = GPL-2.0 or GPL-3.0
 PYTHON_PYQT_LICENSE_FILES = LICENSE.GPL2 LICENSE.GPL3
 
 PYTHON_PYQT_DEPENDENCIES = python-sip host-python-sip qt
@@ -84,7 +84,7 @@ PYTHON_PYQT_CONF_OPTS = \
 # Python 3.x.
 ifeq ($(BR2_PACKAGE_PYTHON),y)
 PYTHON_PYQT_CONF_OPTS += \
-	--vendorid-incdir $(STAGING_DIR)/usr/include/$(PYTHON_PYQT_PYTHON_DIR)  \
+	--vendorid-incdir $(STAGING_DIR)/usr/include/$(PYTHON_PYQT_PYTHON_DIR) \
 	--vendorid-libdir $(STAGING_DIR)/usr/lib/$(PYTHON_PYQT_PYTHON_DIR)/config
 endif
 

@@ -4,11 +4,11 @@
 #
 ################################################################################
 
-ELFUTILS_VERSION = 0.166
+ELFUTILS_VERSION = 0.169
 ELFUTILS_SOURCE = elfutils-$(ELFUTILS_VERSION).tar.bz2
-ELFUTILS_SITE = https://fedorahosted.org/releases/e/l/elfutils/$(ELFUTILS_VERSION)
+ELFUTILS_SITE = https://sourceware.org/elfutils/ftp/$(ELFUTILS_VERSION)
 ELFUTILS_INSTALL_STAGING = YES
-ELFUTILS_LICENSE = GPLv2+ or LGPLv3+ (library)
+ELFUTILS_LICENSE = GPL-2.0+ or LGPL-3.0+ (library)
 ELFUTILS_LICENSE_FILES = COPYING-GPLV2 COPYING-LGPLV3
 ELFUTILS_DEPENDENCIES = zlib
 HOST_ELFUTILS_DEPENDENCIES = host-zlib host-bzip2 host-xz
@@ -20,11 +20,9 @@ HOST_ELFUTILS_AUTORECONF = YES
 # Pass a custom program prefix to avoid a naming conflict between
 # elfutils binaries and binutils binaries.
 ELFUTILS_CONF_OPTS += \
-	--disable-werror \
 	--program-prefix="eu-"
 
 HOST_ELFUTILS_CONF_OPTS = \
-	--disable-werror \
 	--with-bzlib \
 	--with-lzma \
 	--disable-progs
@@ -74,7 +72,7 @@ endif
 
 ifeq ($(BR2_PACKAGE_ELFUTILS_PROGS),y)
 ELFUTILS_CONF_OPTS += --enable-progs
-ELFUTILS_LICENSE := $(ELFUTILS_LICENSE), GPLv3+ (programs)
+ELFUTILS_LICENSE := $(ELFUTILS_LICENSE), GPL-3.0+ (programs)
 ELFUTILS_LICENSE_FILES += COPYING
 else
 ELFUTILS_CONF_OPTS += --disable-progs
