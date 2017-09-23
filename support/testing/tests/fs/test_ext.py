@@ -13,7 +13,7 @@ RESBLKCNT_PROP = "Reserved block count"
 CHECK_FS_TYPE_CMD = "mount | grep '/dev/root on / type {}'"
 
 def dumpe2fs_run(builddir, image):
-    cmd = ["host/usr/sbin/dumpe2fs", os.path.join("images", image)]
+    cmd = ["host/sbin/dumpe2fs", os.path.join("images", image)]
     ret = subprocess.check_output(cmd,
                                   stderr=open(os.devnull, "w"),
                                   cwd=builddir,
@@ -97,7 +97,7 @@ class TestExt4(infra.basetest.BRTest):
 """
 BR2_TARGET_ROOTFS_EXT2=y
 BR2_TARGET_ROOTFS_EXT2_4=y
-BR2_TARGET_ROOTFS_EXT2_BLOCKS=16384
+BR2_TARGET_ROOTFS_EXT2_SIZE="16384"
 BR2_TARGET_ROOTFS_EXT2_INODES=3000
 BR2_TARGET_ROOTFS_EXT2_RESBLKS=10
 # BR2_TARGET_ROOTFS_TAR is not set

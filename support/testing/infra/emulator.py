@@ -1,20 +1,18 @@
-import socket
-import subprocess
-import telnetlib
+import pexpect
 
 import infra
-import infra.basetest
 
-# TODO: Most of the telnet stuff need to be replaced by stdio/pexpect to discuss
-# with the qemu machine.
+
 class Emulator(object):
 
-    def __init__(self, builddir, downloaddir, logtofile):
+    def __init__(self, builddir, downloaddir, logtofile, timeout_multiplier):
         self.qemu = None
-        self.__tn = None
         self.downloaddir = downloaddir
-        self.log = ""
         self.logfile = infra.open_log_file(builddir, "run", logtofile)
+        # We use elastic runners on the cloud to runs our tests. Those runners
+        # can take a long time to run the emulator. Use a timeout multiplier
+        # when running the tests to avoid sporadic failures.
+        self.timeout_multiplier = timeout_multiplier
 
     # Start Qemu to boot the system
     #
@@ -39,7 +37,7 @@ class Emulator(object):
             qemu_arch = arch
 
         qemu_cmd = ["qemu-system-{}".format(qemu_arch),
-                    "-serial", "telnet::1234,server",
+                    "-serial", "stdio",
                     "-display", "none"]
 
         if options:
@@ -71,54 +69,46 @@ class Emulator(object):
             qemu_cmd += ["-append", " ".join(kernel_cmdline)]
 
         self.logfile.write("> starting qemu with '%s'\n" % " ".join(qemu_cmd))
-        self.qemu = subprocess.Popen(qemu_cmd, stdout=self.logfile, stderr=self.logfile)
-
-        # Wait for the telnet port to appear and connect to it.
-        while True:
-            try:
-                self.__tn = telnetlib.Telnet("localhost", 1234)
-                if self.__tn:
-                    break
-            except socket.error:
-                continue
-
-    def __read_until(self, waitstr, timeout=5):
-        data = self.__tn.read_until(waitstr, timeout)
-        self.log += data
-        self.logfile.write(data)
-        return data
-
-    def __write(self, wstr):
-        self.__tn.write(wstr)
+        self.qemu = pexpect.spawn(qemu_cmd[0], qemu_cmd[1:],
+                                  timeout=5 * self.timeout_multiplier,
+                                  env={"QEMU_AUDIO_DRV": "none"})
+        # We want only stdout into the log to avoid double echo
+        self.qemu.logfile_read = self.logfile
 
     # Wait for the login prompt to appear, and then login as root with
     # the provided password, or no password if not specified.
     def login(self, password=None):
-        self.__read_until("buildroot login:", 10)
-        if "buildroot login:" not in self.log:
+        # The login prompt can take some time to appear when running multiple
+        # instances in parallel, so set the timeout to a large value
+        index = self.qemu.expect(["buildroot login:", pexpect.TIMEOUT],
+                                 timeout=60 * self.timeout_multiplier)
+        if index != 0:
             self.logfile.write("==> System does not boot")
             raise SystemError("System does not boot")
 
-        self.__write("root\n")
+        self.qemu.sendline("root")
         if password:
-            self.__read_until("Password:")
-            self.__write(password + "\n")
-        self.__read_until("# ")
-        if "# " not in self.log:
+            self.qemu.expect("Password:")
+            self.qemu.sendline(password)
+        index = self.qemu.expect(["# ", pexpect.TIMEOUT])
+        if index != 0:
             raise SystemError("Cannot login")
         self.run("dmesg -n 1")
 
-    # Run the given 'cmd' on the target
+    # Run the given 'cmd' with a 'timeout' on the target
     # return a tuple (output, exit_code)
-    def run(self, cmd):
-        self.__write(cmd + "\n")
-        output = self.__read_until("# ")
-        output = output.strip().splitlines()
-        output = output[1:len(output)-1]
+    def run(self, cmd, timeout=-1):
+        self.qemu.sendline(cmd)
+        if timeout != -1:
+            timeout *= self.timeout_multiplier
+        self.qemu.expect("# ", timeout=timeout)
+        # Remove double carriage return from qemu stdout so str.splitlines()
+        # works as expected.
+        output = self.qemu.before.replace("\r\r", "\r").splitlines()[1:]
 
-        self.__write("echo $?\n")
-        exit_code = self.__read_until("# ")
-        exit_code = exit_code.strip().splitlines()[1]
+        self.qemu.sendline("echo $?")
+        self.qemu.expect("# ")
+        exit_code = self.qemu.before.splitlines()[2]
         exit_code = int(exit_code)
 
         return output, exit_code
@@ -126,5 +116,4 @@ class Emulator(object):
     def stop(self):
         if self.qemu is None:
             return
-        self.qemu.terminate()
-        self.qemu.kill()
+        self.qemu.terminate(force=True)

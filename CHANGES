@@ -1,3 +1,292 @@
+2017.08, Released September 1st, 2017
+
+	Minor fixes.
+
+	Toolchain: Don't allow internal toolchain builds for MIPS
+	M6201/P6600, as support for these are not yet in mainline GCC.
+
+	Updated/fixed packages: bcusdk, connman, dialog, dnsmasq,
+	gnupg, grub2, iostat, iucode-tool, libgcrypt, libkcapi,
+	libphidget, libv4l, linux-tools, mediastreamer, minidlna,
+	nss-pam-ldapd, nvidia-driver, qt-webkit-kiosk, rpcbind, squid,
+	transmission, vde2, vim
+
+	Updated/fixed defconfigs:
+
+	Removed packages: simicfs.
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#10261: Grub2 fails to build for x86_64
+
+2017.08-rc3, Released August 23rd, 2017
+
+	Fixes all over the tree.
+
+	Updated/fixed packages: alsa-lib, alsa-utils, cc-tool,
+	dbus-cpp, e2fsprogs, elf2flt, faad2, fakeroot, gcc, git, gpsd,
+	gst1-validate, kvmtool, libconfuse, libepoxy, librsync,
+	libspatialindex, libunwind, linux, linux-headers, lua,
+	mariadb, mesa3d, mtd, openocd, python3, syslinux, sysvinit,
+	whois, xen, zmqpp.
+
+	Updated/fixed defconfigs: ci20, socrates_cyclone5,
+	toradex_apalis_imx6.
+
+	Removed defconfig: Armadeus APF9328.
+
+	skeleton-* packages introduced in -rc1 have been renamed to
+	skeleton-init-* instead.
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#10141: Squashfs extended attribute failures
+
+2017.08-rc2, Released August 11th, 2017
+
+	Fixes all over the tree.
+
+	Updated/fixed packages: bind, dbus, erlang-p1-xml, faad2,
+	ficl, gcc, gdb, glibc, jack2, libcurl, linux, linux-headers,
+	lua, mutt, nvme, qt5base, skeleton-common, snappy, stella,
+	swupdate, uclibc, valgrind, webkitgtk.
+
+	Updated/fixed defconfigs: beaglebone_qt5, minnowboard_max,
+	nanopi_m1{, _plus}, olimex_a20_olinuxino_lime, qemu_sparc,
+	qemu_sparc64.
+
+	The cmake-package infrastructure for host packages has been
+	fixed to not incorrectly detect target packages through
+	pkg-config.
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#9926:  systemd-resolved.service: Failed at step NAMESPACE (systemd 233)
+	#10021: libqeglfs-viv-integration.so file is missing for qt5 on armv7
+	#10026: lua-5.3.4: fix lua linker error in swupdate
+	#10146: package/skeleton-common fix recursive variable
+	#10156: glibc compilation fails for X86 32bits (i386)
+	#10201: toolchain-wrapper.c:192: (error) Memory leak:
+	#10221: Buildroot Support
+
+2017.08-rc1, Released August 2nd, 2017
+
+	Infrastructure:
+
+	- The skeleton package has been split into multiple packages:
+	  skeleton-sysv (when Busybox or SysV init are used),
+	  skeleton-systemd (when systemd is used), skeleton-none (when
+	  no init system is used) and skeleton-custom (when a custom
+	  skeleton is used). Those packages, except skeleton-custom,
+	  share common logic and data in a new package called
+	  skeleton-common. The skeleton package becomes a virtual
+	  package. This change allows to generate a filesystem that is
+	  compliant with systemd expectations.
+
+	- Support for using a read-only filesystem with systemd has
+	  been fixed.
+
+	- Major revamp of the gettext handling, with user-visible
+	  effect:
+
+	  - prior to this revamp, when BR2_ENABLE_LOCALE=y, each
+	    package could decide to enable or not NLS support. When
+	    BR2_ENABLE_LOCALE was disabled, NLS support was forced off
+	    by passing --disable-nls to packages.
+
+	  - after this revamp, a new BR2_SYSTEM_ENABLE_NLS option
+	    controls whether NLS support should be enabled or not in
+	    packages. This option defaults to disabled, which means
+	    that now, NLS support is by default disabled in all
+	    packages.
+
+	  Therefore, if you need NLS support in packages, you must now
+	  explicitly enable the BR2_SYSTEM_ENABLE_NLS option.
+
+	- The host directory no longer has a usr/ component. This
+	  makes it much more natural to use that directory as an
+	  externally used toolchain. For compatibility with existing
+	  scripts, a usr -> . link is still added.
+
+	- Hashes are now checked on tarballs by Buildroot when a
+	  package is sourced from a Git repository.
+
+	- Patches are no longer being downloaded from Github, since
+	  auto-generated patches could change over time, and break
+	  hashes. All patches that were downloaded from Github are now
+	  stored in their respective package directories.
+
+	- Hash files in packages can now contain hashes for the
+	  license files contained in the package source code. This
+	  allows to detect changes in such license files.
+
+	- Binaries in $(TARGET_DIR) are now cleaned up from invalid
+	  RPATHs at the end of the build.
+
+	- A new "make sdk" target prepares $(HOST_DIR) to be
+	  relocatable: turns RPATHs in host binaries into relocatable
+	  ones, removes bogus RPATHs from staging binaries/libraries,
+	  and provides a relocate-sdk script that can be executed to
+	  relocate the SDK after installation.
+
+	- Addition of utils/genrandconfig which generates a random
+	  configuration based on a set of pre-defined toolchain
+	  configurations (support/config-fragments/autobuild/) and a
+	  random selection of packages. It is now used by the
+	  autobuilders to generate the random configurations.
+
+	Filesystems:
+
+	- ext2/3/4 filesystems are now generated using mkfs.ext from
+	  e2fsprogs instead of using genext2fs.
+
+	Architecture:
+
+	- Addition of support for ARM big.LITTLE variants
+	- Improved MIPS support, with options to select NaN encoding
+	  and FP32 mode.
+
+	Toolchain:
+
+	- Switch to gcc 6.x as the default gcc version, add support
+	  for gcc 7.x, remove support for gcc 4.8
+	- Switch to binutils 2.28 as the default binutils version, add
+	  support for binutils 2.29, remove support for binutils 2.26
+	- Support added for gdb 8.0
+	- uClibc-ng bumped to 1.0.26
+	- CodeSourcery toolchains for x86 and SuperH have been
+	  removed, they were using a too old glibc version
+	  (2.17). External toolchains with glibc 2.17 or earlier are
+	  no longer supported.
+	- The version selection in the glibc package has been
+	  removed. Like musl and uClibc-ng, we now use the latest
+	  glibc version.
+	- Improved support for Xtensa toolchain overlays, which can
+	  now be downloaded.
+
+	Tools:
+
+	- Numerous improvements to the runtime test infrastructure
+	- Tests are now executed by Gitlab CI on a regular basis
+	- Tools that are directly useful to the user have been moved
+	  from support/scripts/ to utils/: brmake, check-package,
+	  get-developers, scancpan, scanpipy, size-stats-compare,
+	  test-pkg.
+
+	New defconfigs: A13 Olinuxino, Engicam platforms (i.CoreM6
+	Solo/Dual/DualLite/Quad, RQS SOM, GEAM6UL SOM, Is.IoT MX6UL
+	SOM), Nano Pi M1 (Plus), OrangePi Zero and Plus.
+
+	New packages: azure-iot-sdk-c, cracklib, dt-utils, easy-rsa,
+	erlang-jiffy, erlang-p1-oauth2, erlang-p1-xmpp,
+	ifupdown-scripts, irrlicht, kodi-inputstream-adaptive,
+	kodi-inputstream-rtmp, kvazaar, let-me-create, libloki,
+	libpwquality, libressl, libspatialindex, libva-utils,
+	linuxconsoletools, linuxptp, luaossl, lua-sdl2, lua-stdlib,
+	lsscsi, paxtest, pcre2, pixz, python-asn1crypto,
+	python-backports-shutil-get-terminal-size, python-bcrypt,
+	python-cheroot, python-h2, python-hpack, python-hyperframe,
+	python-hyperlink, python-ipython-genutils, python-pathlib2,
+	python-pickleshare, python-priority, python-portend,
+	python-scandir, python-systemd, python-tempora,
+	python-traitlets, python-typepy, qt5virtualkeyboard,
+	ratpoison, rauc, refpolicy, rhash, sdl2_mixer, sdl2_net,
+	xr819-xradio, zstd
+
+	Removed packages: cloog, input-tools, mke2img
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#7892: systemd-journald is broken
+	#9341: avahi-utils does not compile with uClibc +  libglib2
+	#9441: Link BR2_TOOLCHAIN_EXTERNAL_GDB_SERVER_COPY to
+	       BR2_ENABLE_DEBUG
+	#9746: ext4 image generated by Buildroot is not working
+	       properly with U-Boot
+	#9886: Build fails with "unexpected EOF while looking for
+	       matching `"'" if PATH contains a newline
+	#9891: parted 3.1 => 3.2?
+	#9911: qt5 does not build on sparc
+	#9916: qt5 does not build on
+	       arm-buildroot-linux-uclibcgnueabihf for ARMv8 cores
+	#9936: Host QEMU does not build with SDL support because of
+	       pkg-config
+	#9941: nodejs option disappears for arm
+	#9951: SCANCPAN failure
+	#9966: util-linux-2.30/.stamp_built' failed
+	#9976: License file for package 'rtl8821au' incorrect
+	#9991: SGX Error implicit declaration of function
+	       ‘dmac_map_area’
+	#10011: wget does not work from Buildroot
+	#10036: Buildroot builds Raspbian Jessie headless image
+		presenting incorrect prompt
+	#10051: make: *** No rule to make target
+		'raspberrpi3_defconfig'. Stop reported with Buildroot
+		v2017.05.1
+	#10056: No .config file was produced in /buildroot folder
+	#10061: gcc5.4 buildroot toolchain for powerpc libsanitizer
+		failure
+	#10071: fakeroot: replace hard-coded paths in post install
+	#10076: Makefile:4113: recipe for target 'all-gcc'  failed
+	#10091: gcc7.1 does not build with graphite support due to old
+		isl
+	#10121: webkit without the multimedia option causes build
+		error
+
+2017.05.2, Released July 27th, 2017
+
+	Important / security related fixes.
+
+	Webkitgtk bumped to the 2.16.x series, fixing a large number
+	of security issues.
+
+	host-aespipe compile fix for Debian/Gentoo/Ubuntu toolchains
+	which default to PIE mode.
+
+	Updated/fixed packages: aespipe, apache, bind, binutils,
+	busybox, ccache, collectd, dieharder, efibootmgr, efivar,
+	expat, ffmpeg, gcc, heimdal, iproute2, irssi, libglib2,
+	libmemcached, libosip2, libtirpc, libxml-parser-perl,
+	linux-fusion, linux-zigbee, mpg123, orc, pcre, php, protobuf,
+	pulseaudio, python-setproctitle, qt5base, rpi-firmware,
+	samba4, syslinux, systemd, spice, tcpdump, tiff, uboot-tools,
+	webkitgtk, x265, xserver_xorg-server, xvisor
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#10061: gcc5.4 buildroot toolchain for powerpc libsanitizer...
+
+2017.05.1, Released July 4th, 2017
+
+	Important / security related fixes.
+
+	Update support/scripts/scancpan to use METACPAN v1 API as v0
+	has been shutdown.
+
+	Update support/scripts/mkusers to handle setups where
+	/etc/shadow is a symlink.
+
+	External toolchain: Don't create musl dynamic loader symlink
+	for static builds.
+
+	Setlocalversion: Correct detection of mercurial revisions for
+	non-tagged versions.
+
+	Defconfigs: at91sam9x5ek_mmc: workaround boot rom issue.
+
+	Updated/fixed packages: apache, automake, bind, botan, c-ares,
+	dhcp, expat, fcgiwrap, gcc, gdb, gesftpserver, glibc, glmark2,
+	gnutls, gst1-plugins-bad, imagemagick, imx-uuc, intltool,
+	iperf, ipsec-tools, irssi, kmod, libcurl, libgcrypt, libmad,
+	libnl, lugaro, mosquitto, mpg123, ncurses, nodejs, ntp,
+	openssh, openvpn, pngquant, python-simplegeneric, qt5base,
+	qt5multimedia, rtl8821au, socat, spice, systemd, tor, trinity,
+	tslib, vlc, x264, xen, xlib_libxshmfenc, xserver_xorg-server
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#9976: License file for package 'rtl8821au' incorrect
+
 2017.05, Released May 31st, 2017
 
 	Minor fixes.
@@ -203,6 +492,81 @@
 	#9836: triggerhappy: systemd unit broken
 	#9846: musl libc not installed correctly in target folder
 	#9856: build libubox failed on ubuntu 17.04 64bit
+
+2017.02.5, Released July 27th, 2017
+
+	Important / security related fixes.
+
+	Webkitgtk bumped to the 2.16.x series, fixing a large number
+	of security issues.
+
+	host-aespipe compile fix for Debian/Gentoo/Ubuntu toolchains
+	which default to PIE mode.
+
+	Updated/fixed packages: aespipe, apache, bind, binutils,
+	busybox, ccache, collectd, efibootmgr, efivar, expat, ffmpeg,
+	gcc, heimdal, iproute2, irssi, libglib2, libmemcached,
+	libosip2, libtirpc, libxml-parser-perl, linux-fusion,
+	linux-zigbee, mpg123, nodejs, orc, pcre, php, pulseaudio,
+	python-setproctitle, qt5base, rpi-firmware, samba4, syslinux,
+	systemd, spice, tcpdump, tiff, webkitgtk, x265, xen,
+	xserver_xorg-server, xvisor
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#10061: gcc5.4 buildroot toolchain for powerpc libsanitizer...
+
+2017.02.4, Released July 4th, 2017
+
+	Important / security related fixes.
+
+	Update support/scripts/scancpan to use METACPAN v1 API as v0
+	has been shutdown.
+
+	Update support/scripts/mkusers to handle setups where
+	/etc/shadow is a symlink.
+
+	External toolchain: Don't create musl dynamic loader symlink
+	for static builds.
+
+	Setlocalversion: Correct detection of mercurial revisions for
+	non-tagged versions.
+
+	Updated/fixed packages: apache, automake, bind, botan, c-ares,
+	dhcp, expat, fcgiwrap, gcc, gdb, gesftpserver, glibc, gnutls,
+	gst1-plugins-bad, imagemagick, imx-uuc, intltool, iperf,
+	ipsec-tools, irssi, libgcrypt, libmad, libnl, mosquitto,
+	mpg123, ncurses, nodejs, ntp, openssh, openvpn, qt5base,
+	qt5multimedia, rtl8821au, socat, spice, systemd, tor, tslib,
+	vlc, x264, xserver_xorg-server
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#9976: License file for package 'rtl8821au' incorrect
+
+2017.02.3, Released June 2nd, 2017
+
+	Important / security related fixes.
+
+	Download: <pkg>-source-check fixed for packages from git.
+
+	External toolchain: musl dynamic linker symlink for mips-sf
+	corrected.
+
+	Updated/fixed packages: armadillo, audiofile, bash,
+	bluez_utils, cppcms, dbus, dhcp, dropbear, efibootmgr, efl,
+	elfutils, faketime, fbgrab, flashrom, ftop, gdb, git,
+	google-breakpad, gpsd, hans, kvm-unit-tests, kyua, libev,
+	libmicrohttpd, libminiupnpc, libtasn1, libubox, ltp-testsuite,
+	lua, madplay, mariadb, mono, mosquitto, mxml, ntp,
+	nvidia-driver, openblas, openvpn, oracle-mysql, picocom, popt,
+	postgresql, pulseview, qt5base, qwt, rabbitmq-c, redis,
+	rpcbind, rtmpdump, samba4, strongswan, sudo, vlc
+
+	Issues resolved (http://bugs.buildroot.org):
+
+	#9796: source-check broken for Git downloads
+	#9871: fbgrab 1.3 won't build with BR2_REPRODUCIBLE set
 
 2017.02.2, Released May 1st, 2017
 

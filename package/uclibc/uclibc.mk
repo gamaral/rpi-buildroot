@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-UCLIBC_VERSION = 1.0.24
+UCLIBC_VERSION = 1.0.26
 UCLIBC_SOURCE = uClibc-ng-$(UCLIBC_VERSION).tar.xz
 UCLIBC_SITE = http://downloads.uclibc-ng.org/releases/$(UCLIBC_VERSION)
 UCLIBC_LICENSE = LGPL-2.1+
@@ -118,12 +118,6 @@ define UCLIBC_ARM_ABI_CONFIG
 	$(SED) '/CONFIG_ARM_.ABI/d' $(@D)/.config
 	$(call KCONFIG_ENABLE_OPT,CONFIG_ARM_EABI,$(@D)/.config)
 endef
-
-# Thumb1 build is broken with threads with old gcc versions (< 4.8). Since
-# all cores supporting Thumb1 also support ARM, we use ARM code in this case.
-ifeq ($(BR2_GCC_VERSION_4_8_X)$(BR2_ARM_INSTRUCTIONS_THUMB)$(BR2_TOOLCHAIN_HAS_THREADS),yyy)
-UCLIBC_EXTRA_CFLAGS += -marm
-endif
 
 ifeq ($(BR2_BINFMT_FLAT),y)
 define UCLIBC_ARM_BINFMT_FLAT
@@ -259,10 +253,12 @@ endif
 
 ifeq ($(BR2_USE_MMU),y)
 define UCLIBC_MMU_CONFIG
+	$(call KCONFIG_ENABLE_OPT,ARCH_HAS_MMU,$(@D)/.config)
 	$(call KCONFIG_ENABLE_OPT,ARCH_USE_MMU,$(@D)/.config)
 endef
 else
 define UCLIBC_MMU_CONFIG
+	$(call KCONFIG_DISABLE_OPT,ARCH_HAS_MMU,$(@D)/.config)
 	$(call KCONFIG_DISABLE_OPT,ARCH_USE_MMU,$(@D)/.config)
 endef
 endif
@@ -457,10 +453,10 @@ endef
 # STATIC has no ld* tools, only getconf
 ifeq ($(BR2_STATIC_LIBS),)
 define UCLIBC_INSTALL_UTILS_STAGING
-	$(INSTALL) -D -m 0755 $(@D)/utils/ldd.host $(HOST_DIR)/usr/bin/ldd
-	ln -sf ldd $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-ldd
-	$(INSTALL) -D -m 0755 $(@D)/utils/ldconfig.host $(HOST_DIR)/usr/bin/ldconfig
-	ln -sf ldconfig $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-ldconfig
+	$(INSTALL) -D -m 0755 $(@D)/utils/ldd.host $(HOST_DIR)/bin/ldd
+	ln -sf ldd $(HOST_DIR)/bin/$(GNU_TARGET_NAME)-ldd
+	$(INSTALL) -D -m 0755 $(@D)/utils/ldconfig.host $(HOST_DIR)/bin/ldconfig
+	ln -sf ldconfig $(HOST_DIR)/bin/$(GNU_TARGET_NAME)-ldconfig
 endef
 endif
 
