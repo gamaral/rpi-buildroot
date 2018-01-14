@@ -1,0 +1,35 @@
+From 8218434aafd18f7a1f742bddeef10b8829d59f89 Mon Sep 17 00:00:00 2001
+From: "Guillermo A. Amaral" <g@maral.me>
+Date: Sun, 14 Jan 2018 15:22:21 -0800
+Subject: [PATCH] Make build script more buildroot friendly
+
+Signed-off-by: Guillermo A. Amaral <g@maral.me>
+---
+ CMakeLists.txt | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6202553..367182c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,14 +1,7 @@
+ cmake_minimum_required(VERSION 2.8)
+ 
+-SET(COMPILE_DEFINITIONS -Werror)
+-
+-include_directories(/opt/vc/include)
+-include_directories(/opt/vc/include/interface/vcos/pthreads)
+-include_directories(/opt/vc/include/interface/vmcs_host)
+-include_directories(/opt/vc/include/interface/vmcs_host/linux)
+-
+-link_directories(/opt/vc/lib)
+-
+ add_executable(fbcp main.c)
+ 
+-target_link_libraries(fbcp bcm_host)
++target_link_libraries(fbcp bcm_host vchostif)
++
++install(TARGETS fbcp RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/sbin")
+-- 
+2.13.6
+

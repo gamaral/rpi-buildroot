@@ -1,0 +1,13 @@
+config BR2_PACKAGE_RPI_FBCP
+	bool "rpi-fbcp"
+	depends on BR2_arm
+	depends on BR2_PACKAGE_RPI_USERLAND
+	help
+	  Raspberry Pi utility. Used for mirror primary framebuffer to
+	  secondary framebuffer.
+
+	  https://github.com/tasanakorn/rpi-fbcp
+
+comment "rpi-fbc needs rpi-userland"
+	depends on BR2_arm
+	depends on !BR2_PACKAGE_RPI_USERLAND
