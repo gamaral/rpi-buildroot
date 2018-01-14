@@ -1,0 +1,24 @@
+#!/bin/sh
+
+AUTOLOAD_CART="/mnt/rom.p8"
+MODE=""
+
+# Keymap Loading
+KEYMAP=`/bin/grep -E '^keymap=' /mnt/config.txt  | /usr/bin/cut -d'=' -f2`
+if [ -z "${KEYMAP}" ]; then
+	KEYMAP="us"
+fi
+/usr/bin/loadkeys "${KEYMAP}"
+
+# Splore Mode
+/bin/grep -ixq 'splore=on' /mnt/config.txt && MODE="-splore"
+
+# Cart Mode
+if [ -f ${AUTOLOAD_CART}* ]; then
+	MODE="-run ${AUTOLOAD_CART}*"
+fi
+
+# Delay helps peripherals like controllers get detected before pico is started.
+sleep 1
+
+exec /mnt/pico-8/pico8_dyn -home /mnt/pico-8 ${MODE}

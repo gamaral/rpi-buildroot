@@ -1,0 +1,1 @@
+SUBSYSTEM=="graphics" ACTION=="add" ENV{DEVNAME}=="/dev/fb1", RUN+="/sbin/start-stop-daemon start-stop-daemon -S -b -x /usr/sbin/fbcp"

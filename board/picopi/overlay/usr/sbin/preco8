@@ -1,0 +1,27 @@
+#!/bin/sh
+
+MOUNTOPTS="-t vfat -o rw,exec,sync"
+RUNNING=1
+
+try_mount()
+{
+	[ ${RUNNING} ] && \
+	    [ -b $1 ] && \
+	    /bin/mount ${MOUNTOPTS} $1 /mnt && \
+	    export RUNNING=0
+
+	return ${RUNNING}
+}
+
+echo -n "Waiting for device node... "
+
+while [ ${RUNNING} -eq 1 ]; do
+	while [ ! -b /dev/mmcblk0p1 ]; do
+		echo -n
+	done
+
+	try_mount /dev/mmcblk0p1
+done
+
+echo done.
+

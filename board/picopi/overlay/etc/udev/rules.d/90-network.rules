@@ -1,0 +1,1 @@
+SUBSYSTEM=="net", ACTION=="add", ENV{INTERFACE}!="lo", RUN+="/sbin/udhcpc -b -t 1 -i %k"
