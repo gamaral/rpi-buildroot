@@ -1,0 +1,1 @@
+fbtft_device.name=fb_ili9163 fbtft_device.gpios=reset:25,dc:24 fbtft_device.speed=40000000 fbtft_device.bgr=1 fbtft_device.custom=1 fbtft_device.fps=60

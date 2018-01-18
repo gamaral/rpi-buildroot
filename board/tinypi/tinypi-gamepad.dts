@@ -1,0 +1,88 @@
+/*
+ * TinyPi Game Controller Overlay
+ *
+ * Copyright (c) 2018 Guillermo A. Amaral B.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+*/
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+
+    fragment@0 {
+        target-path = "/soc";
+        __overlay__ {
+            gamepad: gamepad {
+                compatible = "gpio-keys";
+                pinctrl-names = "default";
+                pinctrl-0 = <&gamepad_pins>;
+                status = "okay";
+
+                button@5 {
+                    label = "UP";
+                    linux,code = <103>;  // KEY_UP
+                    gpios = <&gpio 5 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@0 {
+                    label = "DOWN";
+                    linux,code = <108>;  // KEY_DOWN
+                    gpios = <&gpio 0 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@6 {
+                    label = "LEFT";
+                    linux,code = <105>;  // KEY_LEFT
+                    gpios = <&gpio 6 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@19 {
+                    label = "RIGHT";
+                    linux,code = <106>;   // KEY_RIGHT
+                    gpios = <&gpio 19 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@26 {
+                    label = "ENTER";
+                    linux,code = <28>;    // KEY_ENTER
+                    gpios = <&gpio 26 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@27 {
+                    label = "Z";
+                    linux,code = <44>;    // KEY_Z
+                    gpios = <&gpio 27 1>; // GPIO_ACTIVE_LOW
+                };
+
+                button@22 {
+                    label = "X";
+                    linux,code = <45>;    // KEY_X
+                    gpios = <&gpio 22 1>; // GPIO_ACTIVE_LOW
+                };
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&gpio>;
+        __overlay__ {
+            gamepad_pins: gamepad_pins {
+                brcm,pins = <5 0 6 19 26 27 22>;
+                brcm,function = <0>;
+                brcm,pull = <2>;
+            };
+        };
+    };
+
+    __overrides__ {
+        gpio_pin = <&gamepad>,"gpios:4",
+                   <&gamepad_pins>,"brcm,pins:0";
+        gpio_pull = <&gamepad_pins>,"brcm,pull:0";
+        active_low = <&gamepad>,"gpios:8";
+    };
+};

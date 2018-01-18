@@ -1,0 +1,11 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		/usr/sbin/alsactl restore
+		;;
+	*)
+		echo "Usage: s30asound {start}" >&2
+		exit 1
+		;;
+esac

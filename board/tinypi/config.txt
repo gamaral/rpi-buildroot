@@ -1,0 +1,53 @@
+##############################
+# PICO-8
+##############################
+keymap=us
+splore=on
+
+##############################
+# TinyPi
+##############################
+display_rotate=2
+dtoverlay=pwm-2chan,pin=18,func=2,pin2=13,func2=4
+dtoverlay=tinypi-gamepad
+hdmi_cvt=128 128 60 1 0 0 0
+hdmi_force_hotplug=1
+hdmi_group=2
+hdmi_mode=1
+hdmi_mode=87
+
+##############################
+# Overscan
+##############################
+# Disable overscan assuming the display supports displaying the full resolution
+# If the text shown on the screen disappears off the edge, comment this out
+disable_overscan=1
+
+##############################
+# GPU Memory
+##############################
+gpu_mem_256=64
+gpu_mem_512=128
+gpu_mem_1024=256
+
+##############################
+# HDMI Audio
+##############################
+hdmi_drive=2
+
+##############################
+# Overclocking
+##############################
+# arm_freq=1000
+# core_freq=500
+# over_voltage=6
+# sdram_freq=500
+# force_turbo=1
+
+##############################
+# PICOPi
+##############################
+disable_splash=1
+dtparam=audio=on
+dtparam=spi=on
+kernel=pico.pi
